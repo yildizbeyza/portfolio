@@ -136,6 +136,8 @@ ul.main-menu li a.active {
 .show {
   display:block;
 }
-
+iframe {
+  max-width:100%;
+}
 
 
