@@ -1,80 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Beyzanur Yıldız - Portfolio</title>
-  <style>
-    body {
-      margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f6f9; color: #333; line-height: 1.6;
-    }
-    header {
-      background: #222; color: #fff; padding: 40px 20px; text-align: center;
-    }
-    header h1 { margin: 0; font-size: 2.5rem; }
-    header p { margin-top: 10px; font-size: 1.2rem; color: #bbb; }
-
-    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-    h2 { border-bottom: 2px solid #007acc; padding-bottom: 5px; color: #007acc; }
-    ul { list-style: none; padding: 0; }
-    ul li { margin: 10px 0; }
-    ul li a { color: #007acc; font-weight: bold; text-decoration: none; }
-    ul li a:hover { text-decoration: underline; }
-
-    .card {
-      background: #fff; padding: 20px; margin-bottom: 20px;
-      border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .contact a { display: inline-block; margin-right: 15px; color: #007acc; text-decoration: none; }
-    .contact a:hover { text-decoration: underline; }
-
-    footer {
-      background: #222; color: #aaa; text-align: center;
-      padding: 15px; margin-top: 40px;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beyza — AI/ML Engineer</title>
+<meta name="description" content="Beyza — AI/ML & NLP engineer portfolio with playful, interactive windows."/>
+<style>
+  :root{
+    --bg:#f2f6fb; --card:#ffffff; --ink:#1f2937; --muted:#6b7280; --brand:#ffb34d;
+    --line:#dbe3ee; --shadow:0 10px 30px rgba(0,0,0,.12);
+  }
+  [data-theme="dark"]{
+    --bg:#0b1020; --card:#12182a; --ink:#e6edf3; --muted:#9aa6b2; --brand:#ffd271;
+    --line:#1f2a44; --shadow:0 12px 40px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu;
+    color:var(--ink);
+    background:
+      radial-gradient(1400px 500px at 50% 110%, rgba(72,166,255,.18),transparent 60%),
+      linear-gradient(180deg, var(--bg), var(--bg));
+    overflow-x:hidden;
+  }
+  /* top bar */
+  .topbar{
+    position:fixed; inset:0 0 auto 0; height:60px; display:flex; align-items:center;
+    padding:0 16px; backdrop-filter:saturate(180%) blur(8px);
+    background:linear-gradient(180deg, rgba(0,0,0,.08),rgba(0,0,0,0)) ;
+    color:var(--ink); z-index:10;
+  }
+  .brand{display:flex; gap:10px; align-items:center; font-weight:700; letter-spacing:.2px}
+  .star{width:28px; height:28px; filter:drop-shadow(0 3px 6px rgba(0,0,0,.25)); animation:float 3s ease-in-out infinite}
+  @keyframes float {0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  .spacer{flex:1}
+  .chip{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.35)}
+  .btn{border:1px solid var(--line); background:var(--card); color:var(--ink); padding:8px 12px; border-radius:10px; cursor:pointer}
+  .btn:hover{transform:translateY(-1px); box-shadow:var(--shadow)}
+  .dock{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:24px; display:flex; gap:14px; z-index:12;
+    padding:8px 12px; background:rgba(255,255,255,.55); border:1px solid var(--line); border-radius:14px; backdrop-filter:blur(8px)
+  }
+  [data-theme="dark"] .dock{background:rgba(20,26,44,.55)}
+  .dock button{all:unset; cursor:pointer; padding:10px 12px; border-radius:10px}
+  .dock button:focus-visible{outline:2px solid var(--brand)}
+  .icon{width:22px; height:22px; opacity:.9}
+  /* window */
+  .win{
+    position:absolute; width:min(900px, 92vw); left:50%; transform:translateX(-50%);
+    background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow);
+    transition:transform .2s ease, box-shadow .2s ease; user-select:none;
+  }
+  .win.dragging{opacity:.96}
+  .titlebar{
+    display:flex; align-items:center; gap:8px; padding:10px 12px; cursor:grab; border-bottom:1px solid var(--line); background:linear-gradient(180deg, rgba(0,0,0,.05), transparent);
+    border-top-left-radius:14px; border-top-right-radius:14px;
+  }
+  .dots{display:flex; gap:6px; margin-right:6px}
+  .dot{width:10px; height:10px; border-radius:50%}
+  .dot.red{background:#ff5f57} .dot.yellow{background:#febc2e} .dot.green{background:#28c840}
+  .title{font-weight:600}
+  .content{padding:22px}
+  .grid{display:grid; grid-template-columns:1fr; gap:16px}
+  @media (min-width:820px){ .grid{grid-template-columns:1.2fr .8fr} }
+  .card{
+    border:1px solid var(--line); border-radius:12px; padding:16px; background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+  }
+  h1{font-size:28px; margin:0 0 6px}
+  h2{font-size:18px; margin:0 0 10px; color:var(--muted); font-weight:600}
+  .lead{font-size:15px; color:var(--muted)}
+  .tag{display:inline-block; padding:4px 8px; border:1px solid var(--line); border-radius:999px; margin:4px 6px 0 0; font-size:12px}
+  .projects{display:grid; grid-template-columns:1fr; gap:12px}
+  @media (min-width:640px){ .projects{grid-template-columns:repeat(2,1fr)} }
+  .proj{
+    padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--card); transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .proj:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
+  .proj h3{margin:0 0 6px; font-size:16px}
+  .proj p{margin:0; color:var(--muted); font-size:14px}
+  .link{color:#0ea5e9; text-decoration:none; font-weight:600}
+  .buttons{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+  .button{border:1px solid var(--line); padding:8px 12px; border-radius:10px; text-decoration:none; color:var(--ink); background:var(--card)}
+  .button:hover{box-shadow:var(--shadow); transform:translateY(-1px)}
+  .mini{font-size:12px; color:var(--muted)}
+  .resume a{display:inline-flex; align-items:center; gap:8px}
+  .pill{display:inline-flex; align-items:center; gap:8px; border:1px dashed var(--line); padding:8px 12px; border-radius:999px}
+  .note{font-size:13px; color:var(--muted)}
+  .kbd{font:12px/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono"; background:rgba(0,0,0,.08); border:1px solid var(--line); padding:2px 6px; border-radius:6px}
+  /* placements */
+  #home{top:86px}
+  #work{top:160px}
+  #play{top:240px}
+  #resume{top:320px}
+  #contact{top:400px}
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>Beyzanur Yıldız</h1>
-    <p>Computer Engineer | AI & NLP Enthusiast</p>
-  </header>
-
-  <div class="container">
-    <div class="card">
-      <h2>About Me</h2>
-      <p>
-        Recent Computer Engineering graduate from MEF University (June 2025). 
-        Passionate about Artificial Intelligence, Machine Learning, and Natural Language Processing.
-      </p>
+  <!-- top bar -->
+  <div class="topbar" role="navigation" aria-label="Global">
+    <div class="brand">
+      <svg class="star" viewBox="0 0 64 64" aria-hidden="true"><path fill="#FFD36E" d="M31.7 6.7c1.1-2.5 4.5-2.5 5.6 0l4.6 10.5c.5 1.1 1.5 1.8 2.7 1.9l11.4 1c2.7.2 3.8 3.6 1.8 5.4l-8.6 7.7c-.9.8-1.2 2.1-.9 3.3l2.7 10.9c.7 2.6-2.1 4.7-4.4 3.3l-9.8-6.1c-1-.6-2.2-.6-3.2 0l-9.8 6.1c-2.3 1.4-5.1-.7-4.4-3.3l2.7-10.9c.3-1.2 0-2.5-.9-3.3l-8.6-7.7c-2-1.8-1-5.2 1.8-5.4l11.4-1c1.2-.1 2.2-.8 2.7-1.9l4.6-10.5z"/></svg>
+      <span>Beyza</span>
+      <span class="chip" title="ADHD is my superpower">ADHD ⚡ focus</span>
     </div>
-
-    <div class="card">
-      <h2>Projects</h2>
-      <ul>
-        <li><a href="https://github.com/username/coreference-resolution" target="_blank">Benchmarking LLMs on Turkish Coreference Resolution</a></li>
-        <li><a href="https://github.com/username/video-recommendation" target="_blank">AI-powered Video Recommendation Engine</a></li>
-        <li><a href="https://github.com/username/microprocessor-projects" target="_blank">Microprocessor Projects (ARM Cortex-A9)</a></li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h2>Resume</h2>
-      <p><a href="CV.pdf" target="_blank">📄 Download my CV (PDF)</a></p>
-    </div>
-
-    <div class="card contact">
-      <h2>Contact</h2>
-      <a href="mailto:yildizbeyzax@gmail.com">📧 Email</a>
-      <a href="https://www.linkedin.com/in/beyzanuryildiz" target="_blank">💼 LinkedIn</a>
-      <a href="https://github.com/yildizbeyza" target="_blank">💻 GitHub</a>
-    </div>
+    <div class="spacer"></div>
+    <button class="btn" id="themeBtn" aria-label="Toggle theme">Toggle theme</button>
   </div>
 
-  <footer>
-    © 2025 Beyzanur Yıldız. All rights reserved.
-  </footer>
+  <!-- windows -->
+  <section id="home" class="win" aria-label="Intro window">
+    <div class="titlebar" data-drag="#home"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">home</div></div>
+    <div class="content">
+      <div class="grid">
+        <div class="card">
+          <h1>Hi, I’m <span style="color:var(--brand)">Beyza</span> — AI/ML Engineer</h1>
+          <p class="lead">
+            Computer Engineering (MEF, ABET) graduate specialized in <b>NLP</b>, <b>Recommenders</b>, and <b>data-driven product science</b>.
+            I love turning messy data into delightful, measurable impact.
+          </p>
+          <div class="buttons">
+            <a class="button" href="#work" onclick="focusWin('work')">See Work</a>
+            <a class="button" href="#resume" onclick="focusWin('resume')">Resume</a>
+            <a class="button" href="mailto:yildizbeyzax@gmail.com">Email me</a>
+          </div>
+          <p class="note" style="margin-top:10px">
+            Shortcuts: <span class="kbd">1</span> Home <span class="kbd">2</span> Work <span class="kbd">3</span> Playground <span class="kbd">4</span> Resume <span class="kbd">5</span> Contact
+          </p>
+        </div>
+        <div class="card">
+          <h2>Strengths</h2>
+          <div class="tag">NLP (Turkish Coreference)</div>
+          <div class="tag">Recommenders</div>
+          <div class="tag">Experimentation / A/B</div>
+          <div class="tag">Python • PyTorch • Sklearn</div>
+          <div class="tag">SQL • Data Pipelines</div>
+          <div class="tag">Unity (beginner)</div>
+          <p class="mini" style="margin-top:10px">
+            ADHD-friendly systems thinker • fast prototyper • talks to humans & machines with equal joy ✨
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <section id="work" class="win" aria-label="Work window">
+    <div class="titlebar" data-drag="#work"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">work</div></div>
+    <div class="content">
+      <div class="card">
+        <h2>Selected Projects</h2>
+        <div class="projects">
+          <div class="proj">
+            <h3>Turkish Coreference Benchmarking (LLMs)</h3>
+            <p>Prompt & eval pipeline; MUC/B³/CEAF metrics; dropped pronouns & nested mentions handling.</p>
+            <div class="buttons">
+              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Code</a>
+              <a class="button" href="#" onclick="openToast('Ask me about dataset & metrics!')">Notes</a>
+            </div>
+          </div>
+          <div class="proj">
+            <h3>Video Platform Recommender + Churn</h3>
+            <p>End-to-end ML (feature store, training, offline/online eval), content-user hybrid ranking.</p>
+            <div class="buttons">
+              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Code</a>
+              <a class="button" href="#" onclick="openToast('AB tests & uplift modeling ❤️')">Notes</a>
+            </div>
+          </div>
+          <div class="proj">
+            <h3>NFT Recommender (ICRYPEX)</h3>
+            <p>Prototyped candidate generation & re-ranking with embeddings (Pinecone) + Python services.</p>
+            <div class="buttons">
+              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Artifacts</a>
+            </div>
+          </div>
+          <div class="proj">
+            <h3>Face Recognition for Assistant Robot</h3>
+            <p>Evaluated FaceNet/DeepFace/GCV; OpenCV pipeline; speech-to-text integration.</p>
+            <div class="buttons">
+              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Report</a>
+            </div>
+          </div>
+          <div class="proj">
+            <h3>ARM Cortex-A9 Microprocessor Labs</h3>
+            <p>Interrupts, private timers, HEX display games; clean ISRs and memory-mapped IO fun.</p>
+            <div class="buttons">
+              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Snippets</a>
+            </div>
+          </div>
+          <div class="proj">
+            <h3>Teaching & Mentoring</h3>
+            <p>MEF UTA for Programming & Digital Systems; built reproducible notebooks & rubrics.</p>
+            <div class="buttons">
+              <a class="button" href="https://www.linkedin.com/in/beyzanuryildiz" target="_blank">Highlights</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Tech I use</h2>
+        <div class="tag">Python</div><div class="tag">PyTorch</div><div class="tag">scikit-learn</div>
+        <div class="tag">HuggingFace</div><div class="tag">SQL</div><div class="tag">pandas</div>
+        <div class="tag">Airflow (basics)</div><div class="tag">GCP/AWS (basics)</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" class="win" aria-label="Playground window">
+    <div class="titlebar" data-drag="#play"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">playground</div></div>
+    <div class="content">
+      <div class="card">
+        <h2>Mini Demos</h2>
+        <p class="lead">Tiny toys & experiments I build to learn faster. (More coming!)</p>
+        <div class="projects">
+          <div class="proj">
+            <h3>Prompt Playground</h3>
+            <p>Side-by-side prompts for Turkish pronoun resolution; exportable CSVs.</p>
+            <div class="buttons">
+              <a class="button" href="#" onclick="openToast('Demo link placeholder ✨')">Open</a>
+            </div>
+          </div>
+          <div class="proj">
+            <h3>AB Test Visualizer</h3>
+            <p>Simulates retention/LTV lifts with Bayesian posteriors; fun sliders.</p>
+            <div class="buttons">
+              <a class="button" href="#" onclick="openToast('Coming soon!')">Open</a>
+            </div>
+          </div>
+        </div>
+        <p class="mini" style="margin-top:10px">If you like playful learning, we’ll get along really well 🤝</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resume" class="win" aria-label="Resume window">
+    <div class="titlebar" data-drag="#resume"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">resume</div></div>
+    <div class="content">
+      <div class="card resume">
+        <h2>Resume</h2>
+        <p class="pill">ABET-accredited MEF CE • AI/ML focus • NLP & Recommenders • Data-driven product</p>
+        <p style="margin-top:10px">
+          <a class="button" href="CV_BEYZA_YILDIZ.pdf" target="_blank" rel="noopener">📄 Download PDF</a>
+          <a class="button" href="https://www.linkedin.com/in/beyzanuryildiz" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="button" href="https://github.com/yildizbeyza" target="_blank" rel="noopener">GitHub</a>
+        </p>
+        <p class="note">Prefer a one-page brief? Ping me—happy to tailor to role (DS / AI Eng / Game Data).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="win" aria-label="Contact window">
+    <div class="titlebar" data-drag="#contact"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">contact</div></div>
+    <div class="content">
+      <div class="card">
+        <h2>Say hi 👋</h2>
+        <p>Email: <a class="link" href="mailto:yildizbeyzax@gmail.com">yildizbeyzax@gmail.com</a></p>
+        <p>Also on <a class="link" href="https://www.linkedin.com/in/beyzanuryildiz" target="_blank">LinkedIn</a> and <a class="link" href="https://github.com/yildizbeyza" target="_blank">GitHub</a>.</p>
+        <p class="mini">I value kind teams, playful rigor, and building things users actually love.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- dock -->
+  <div class="dock" aria-label="Dock">
+    <button onclick="focusWin('home')" title="Home (1)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M12 3 2 12h3v8h6v-5h2v5h6v-8h3z'/%3E%3C/svg%3E"/></button>
+    <button onclick="focusWin('work')" title="Work (2)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M4 7h16v10H4zm5-3h6v2H9z'/%3E%3C/svg%3E"/></button>
+    <button onclick="focusWin('play')" title="Playground (3)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M8 5v14l11-7z'/%3E%3C/svg%3E"/></button>
+    <button onclick="focusWin('resume')" title="Resume (4)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M6 2h9l5 5v15H6zM14 2v6h6'/%3E%3C/svg%3E"/></button>
+    <button onclick="focusWin('contact')" title="Contact (5)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M21 8v8a2 2 0 0 1-2 2H5l-4 4V6a2 2 0 0 1 2-2h12'/%3E%3C/svg%3E"/></button>
+  </div>
+
+<script>
+  // theme
+  const root = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const saved = localStorage.getItem('theme');
+  if(saved){ root.setAttribute('data-theme', saved); }
+  btn.onclick = ()=> {
+    const t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', t); localStorage.setItem('theme', t);
+  };
+
+  // focus window helper
+  function focusWin(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    document.querySelectorAll('.win').forEach(w => w.style.zIndex = 1);
+    el.style.zIndex = 9;
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  // keyboard shortcuts
+  const order = ['home','work','play','resume','contact'];
+  window.addEventListener('keydown', (e)=>{
+    const i = parseInt(e.key,10);
+    if(i>=1 && i<=5){ focusWin(order[i-1]); }
+  });
+
+  // draggable windows
+  document.querySelectorAll('.titlebar').forEach(tb=>{
+    let drag=false, offX=0, offY=0, win=null;
+    tb.addEventListener('pointerdown', (e)=>{
+      drag=true; win=tb.parentElement; win.classList.add('dragging');
+      const r = win.getBoundingClientRect();
+      offX = e.clientX - r.left; offY = e.clientY - r.top;
+      win.setPointerCapture(e.pointerId);
+    });
+    tb.addEventListener('pointermove', (e)=>{
+      if(!drag) return;
+      const x = e.clientX - offX; const y = e.clientY - offY;
+      win.style.left = x + 'px'; win.style.top = Math.max(70, y) + 'px';
+      win.style.transform = 'translateX(0)'; // break initial centering
+    });
+    tb.addEventListener('pointerup', ()=>{
+      drag=false; tb.parentElement.classList.remove('dragging');
+    });
+  });
+
+  // tiny toast
+  let toast;
+  function openToast(msg){
+    if(!toast){
+      toast = document.createElement('div');
+      Object.assign(toast.style, {
+        position:'fixed', left:'50%', transform:'translateX(-50%)',
+        bottom:'90px', background:'var(--card)', color:'var(--ink)',
+        border:'1px solid var(--line)', padding:'10px 14px',
+        borderRadius:'10px', boxShadow:'var(--shadow)', zIndex:20
+      });
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = 1;
+    setTimeout(()=> toast.style.opacity = 0, 2000);
+  }
+</script>
 </body>
 </html>
