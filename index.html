@@ -1,298 +1,241 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Beyza — Arcade Portfolio</title>
-  <meta name="description" content="Beyza Yıldız — arcade‑style personal site" />
+  <title>Beyza — 2D Arcade Portfolio</title>
+  <meta name="description" content="2D arcade‑style portfolio without custom drawing" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg: #f4fbff;
-      --bg-accent:#cde9ff;
-      --panel:#ffffff;
-      --panel-2:#f1f5ff;
-      --text:#111827;
-      --muted:#4b5563;
-      --brand:#ffb000;
-      --brand-2:#4fd1ff;
-      --shadow: 0 18px 40px rgba(0,0,0,.15);
-      --scan: linear-gradient(rgba(255,255,255,.03) 50%, rgba(0,0,0,.03) 50%);
+      --bg:#0b1020;           /* deep night blue */
+      --bg2:#0f1733;          /* vignette layer */
+      --panel:#121a39;        /* monitor body */
+      --screen:#0a1430;       /* screen glass */
+      --text:#e8ecff;         /* main text */
+      --muted:#a8b3d9;        /* muted */
+      --accent:#6cf3ff;       /* neon cyan */
+      --accent2:#ffde6a;      /* neon amber */
+      --danger:#ff7a7a;       /* highlight red */
+      --shadow:0 24px 60px rgba(0,0,0,.55);
+      --pixel: drop-shadow(0 0 0 var(--accent)); /* fallback for pixel border */
     }
-    body.dark{
-      --bg:#0e1216;
-      --bg-accent:#0b2230;
-      --panel:#0f1621;
-      --panel-2:#0c1a26;
-      --text:#e5e7eb;
-      --muted:#9ca3af;
-      --brand:#ffd166;
-      --brand-2:#7dd3fc;
-      --shadow: 0 18px 40px rgba(0,0,0,.55);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      color:var(--text);
-      background: linear-gradient(var(--bg) 60%, var(--bg-accent));
-      overflow-x:hidden;
-    }
+    body.light{
+      --bg:#f5fbff;
+      --bg2:#dfefff;
+      --panel:#e7f2ff;
+      --screen:#f0f7ff;
+      --text:#0b1020;
+      --muted:#395077;
+      --accent:#008cff;
+      --accent2:#ff7a18;
+      --danger:#e63946;
+      --shadow:0 20px 40px rgba(0,0,0,.15);
+    }*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; background: radial-gradient(1000px 600px at 50% -10%, var(--bg2), var(--bg)); color:var(--text);}
 
-    /* --- Subtle moving arcade background --- */
-    .sky{
-      position:fixed; inset:0; overflow:hidden; z-index:-2;
-      background: radial-gradient(1200px 800px at 50% 120%, var(--bg-accent), transparent 60%),
-                  linear-gradient(var(--bg), var(--bg-accent));
-    }
-    .stars{position:absolute; inset:0; z-index:-1;}
-    .star{position:absolute; width:3px; height:3px; background:#fff; opacity:.8; filter:drop-shadow(0 0 4px #fff);
-      animation: drift var(--speed, 18s) linear infinite;
-    }
-    @keyframes drift{from{transform:translateY(100vh)} to{transform:translateY(-10vh)}}
-    /* pixel clouds */
-    .cloud{position:absolute; width:240px; height:120px; background:var(--panel-2); border:2px solid #00000010; box-shadow: var(--shadow);
-      clip-path: polygon(0 70%, 6% 60%, 10% 70%, 18% 58%, 24% 70%, 30% 60%, 36% 70%, 44% 58%, 52% 70%, 60% 60%, 68% 72%, 76% 62%, 84% 74%, 92% 66%, 100% 76%, 100% 100%,0 100%);
-      opacity:.35; filter:saturate(.9);
-      animation: float var(--cspd, 40s) linear infinite;
-    }
-    @keyframes float{from{transform:translateX(-20vw)} to{transform:translateX(120vw)}}
+/* subtle animated starfield (no images, no libs) */
+canvas#bg{position:fixed; inset:0; z-index:-2}
 
-    /* --- Sun/Moon toggle --- */
-    .topbar{position:fixed; left:14px; top:14px; display:flex; gap:10px; align-items:center; z-index:50}
-    .toggle{width:38px; height:38px; border-radius:10px; border:2px solid #00000015; background:var(--panel); box-shadow: var(--shadow); display:grid; place-items:center; cursor:pointer}
-    .toggle svg{width:22px; height:22px; fill:var(--brand);}
+.topbar{position:fixed; left:16px; top:16px; display:flex; gap:10px; align-items:center}
+.btn{border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--text); padding:8px 12px; border-radius:10px; cursor:pointer; backdrop-filter: blur(6px)}
 
-    /* --- Retro screen --- */
-    .wrap{display:grid; place-items:center; min-height:100vh; padding:60px 18px}
-    .monitor{position:relative; width:min(940px, 92vw); background:var(--panel); border-radius:18px; box-shadow: var(--shadow); border:3px solid #00000020}
-    .monitor:before{content:""; position:absolute; inset:0; background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.04) 0 2px, transparent 2px 4px);
-      mix-blend-mode: overlay; pointer-events:none; opacity:.7; border-radius:16px}
-    .taskbar{background:#2e2e2e; color:#fff; font-weight:600; letter-spacing:.02em; border-radius:14px 14px 0 0; padding:12px 16px; font-size:14px; font-family:"Press Start 2P", system-ui;}
+.wrap{display:grid; place-items:center; min-height:100vh; padding:60px 18px}
 
-    .screen{padding:28px; display:grid; gap:26px}
-    .title{font-weight:800; font-size:clamp(28px, 5vw, 46px); letter-spacing:.3px}
-    .subtitle{color:var(--muted); font-size:clamp(14px, 2.4vw, 18px)}
+/* retro monitor */
+.monitor{position:relative; width:min(980px, 94vw); background:var(--panel); border-radius:20px; box-shadow: var(--shadow); border:2px solid rgba(255,255,255,.08)}
+.monitor .bezel{padding:18px; border-bottom:2px solid rgba(255,255,255,.08); font-family:"Press Start 2P"; letter-spacing:.02em; color:var(--muted)}
+.screen{position:relative; padding:26px; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.12)), var(--screen); border-radius:0 0 18px 18px; overflow:hidden}
+.scan{position:absolute; inset:0; background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 2px, transparent 2px 4px); mix-blend-mode:overlay; pointer-events:none}
 
-    /* icon grid */
-    .grid{display:grid; grid-template-columns: repeat(3,minmax(160px, 1fr)); gap:18px; justify-items:center}
-    .iconcard{background:var(--panel-2); border:2px solid #00000010; border-radius:18px; padding:18px 14px; width:100%; aspect-ratio: 4/3; display:grid; place-items:center; gap:10px; cursor:pointer; transition:.2s transform, .2s filter}
-    .iconcard:hover{transform:translateY(-4px);}
-    .iconcard svg{width:54px; height:54px;}
-    .label{font-family:"Press Start 2P", system-ui; font-size:12px; text-transform:lowercase}
+.title{font-weight:800; font-size:clamp(28px,4.8vw,44px);}
+.subtitle{color:var(--muted); font-size:clamp(14px,2.4vw,18px)}
 
-    /* Modal (retro window) */
-    dialog{border:0; padding:0; border-radius:12px; width:min(760px, 92vw); background:var(--panel); color:var(--text); box-shadow: var(--shadow)}
-    .winbar{background:#3b3b3b; color:#fff; padding:10px 14px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center; font-family:"Press Start 2P"; font-size:12px}
-    .content{padding:18px 18px 24px; line-height:1.6}
-    .content h3{margin:.4rem 0 0.6rem; font-size:20px}
-    .content p{margin:.4rem 0; color:var(--text)}
-    .content ul{margin:.6rem 0 1rem 1.2rem}
-    .content li{margin:.25rem 0}
-    .xbtn{all:unset; cursor:pointer; font-weight:800}
-    .linklist a{display:block; padding:.45rem .6rem; border-radius:10px; text-decoration:none; color:var(--text); background:var(--panel-2); border:1px solid #00000010; margin:.35rem 0}
-    .linklist a:hover{filter:brightness(1.05)}
-    .cta{display:inline-block; margin-top:.5rem; background:var(--brand); color:#1f2937; padding:.55rem .8rem; border-radius:10px; text-decoration:none; font-weight:800}
+/* icon grid */
+.grid{display:grid; grid-template-columns:repeat(3,minmax(180px,1fr)); gap:18px; margin-top:20px}
+@media (max-width:780px){.grid{grid-template-columns:repeat(2,minmax(160px,1fr))}}
 
-    footer{display:grid; place-items:center; padding:18px; color:var(--muted); font-size:13px}
+.card{position:relative; background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.18)); border:1px solid rgba(255,255,255,.12); border-radius:16px; display:grid; place-items:center; gap:10px; padding:18px 12px; aspect-ratio:4/3; cursor:pointer; transition:transform .18s ease, filter .18s ease}
+.card:hover{transform:translateY(-4px)}
+.label{font-family:"Press Start 2P"; font-size:12px; color:var(--accent2)}
 
-    /* small screens */
-    @media (max-width:720px){
-      .grid{grid-template-columns: repeat(2, minmax(140px, 1fr));}
-    }
+/* pixel border using box-shadow steps */
+.pixel{position:absolute; inset:-6px; border-radius:18px; box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 18px rgba(0,0,0,.4), inset 0 0 0 2px rgba(0,0,0,.2)}
+
+.icon{width:58px; height:58px; color:var(--accent)}
+.icon svg{width:100%; height:100%}
+
+/* modal window */
+dialog{border:0; padding:0; width:min(780px,94vw); background:var(--panel); color:var(--text); border-radius:14px; box-shadow:var(--shadow)}
+.winbar{background:rgba(255,255,255,.08); padding:10px 14px; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:space-between; font-family:"Press Start 2P"; font-size:12px}
+.content{padding:18px 18px 24px; line-height:1.7}
+.content h3{margin:8px 0 8px; font-size:20px}
+.content p{margin:.4rem 0}
+.content ul{margin:.4rem 0 .6rem 1.2rem}
+.x{all:unset; cursor:pointer; font-weight:800; color:var(--danger)}
+.link{display:block; margin:.35rem 0; padding:.5rem .6rem; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:10px; color:var(--text); text-decoration:none}
+.link:hover{filter:brightness(1.06)}
+
+footer{display:grid; place-items:center; padding:18px; color:var(--muted); font-size:13px}
+
   </style>
 </head>
 <body>
-  <div class="sky" aria-hidden="true">
-    <div class="stars" id="stars"></div>
-    <div class="cloud" style="--cspd:36s; top:18%; left:-20%;"></div>
-    <div class="cloud" style="--cspd:48s; top:38%; left:-10%; width:300px"></div>
-    <div class="cloud" style="--cspd:60s; top:62%; left:-30%; width:280px"></div>
-  </div>
-
-  <div class="topbar">
-    <button class="toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
-      <!-- Sun/Moon swap via JS -->
-      <svg id="sunIcon" viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zm10.48 14.32l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM12 4V1h0v3zm0 19v-3 3zM4 12H1h3zm19 0h-3 3zM6.76 19.16l-1.42 1.42-1.79-1.8 1.41-1.41 1.8 1.79zM19.16 6.76l1.42-1.42 1.8 1.79-1.41 1.41-1.81-1.78zM12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
-    </button>
-  </div>
-
-  <main class="wrap">
-    <section class="monitor" role="region" aria-label="Retro computer">
-      <div class="taskbar">home</div>
+  <canvas id="bg" aria-hidden="true"></canvas>  <div class="topbar">
+    <button class="btn" id="themeBtn" title="toggle theme">🌙</button>
+    <a class="btn" href="assets/Beyza_Yildiz_CV.pdf" target="_blank" rel="noopener">📄 CV</a>
+  </div>  <main class="wrap">
+    <section class="monitor" role="region" aria-label="Arcade monitor">
+      <div class="bezel">home</div>
       <div class="screen">
-        <div>
-          <div class="title">hi! i'm <span style="color:var(--brand)">beyza</span></div>
-          <div class="subtitle">ai/ml engineer • data & game analytics enthusiast • web tinkerer</div>
+        <div class="title">hi! i’m <span style="color:var(--accent2)">beyza</span></div>
+        <div class="subtitle">ai/ml engineer • data & game analytics • tr‑nlp</div><div class="grid" role="list">
+      <!-- ABOUT -->
+      <button class="card" data-open="about" role="listitem" aria-label="about">
+        <span class="pixel"></span>
+        <div class="icon" aria-hidden="true">
+          <!-- user-circle -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.84 0-8 2.44-8 5v1h16v-1c0-2.56-3.16-5-8-5Z"/></svg>
         </div>
-        <div class="grid" role="list">
-          <button class="iconcard" data-open="about" role="listitem" aria-label="about">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M11 17h2v-6h-2v6zm0-8h2V7h-2v2zm1-7C5.48 2 1 6.48 1 12s4.48 10 10 10 10-4.48 10-10S18.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-            <div class="label">about</div>
-          </button>
-          <button class="iconcard" data-open="links" aria-label="links">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10.59 13.41a1.996 1.996 0 010-2.83l3.18-3.18a2 2 0 112.83 2.83l-1.41 1.41-1.42 1.42a1.996 1.996 0 01-2.83 0zM7.05 17a3.5 3.5 0 004.95 0l1.41-1.41 1.42-1.42 1.41-1.41a3.5 3.5 0 10-4.95-4.95L10.89 8"/></svg>
-            <div class="label">links</div>
-          </button>
-          <button class="iconcard" data-open="experience" aria-label="experience">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 6V4h-4v2H3v14h18V6h-7zM10 4h4v2h-4V4zm-5 6h14v8H5v-8z"/></svg>
-            <div class="label">experience</div>
-          </button>
-          <button class="iconcard" data-open="fun" aria-label="fun">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 12a5 5 0 0110 0v1h1a3 3 0 110 6H6a3 3 0 110-6h1v-1zm2 1h6v-1a3 3 0 10-6 0v1zM8.5 9A1.5 1.5 0 1010 10.5 1.5 1.5 0 008.5 9zm7 0A1.5 1.5 0 1114 10.5 1.5 1.5 0 0115.5 9z"/></svg>
-            <div class="label">fun</div>
-          </button>
-          <button class="iconcard" data-open="contact" aria-label="contact">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4a2 2 0 00-2 2v12l6-4h12a2 2 0 002-2V6a2 2 0 00-2-2z"/></svg>
-            <div class="label">contact</div>
-          </button>
-          <button class="iconcard" data-open="faq" aria-label="faq">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-5h2c0-2 3-2 3-5a4 4 0 00-8 0h2a2 2 0 114 0c0 2-3 2-3 5z"/></svg>
-            <div class="label">faq</div>
-          </button>
+        <div class="label">about</div>
+      </button>
+
+      <!-- LINKS -->
+      <button class="card" data-open="links" aria-label="links">
+        <span class="pixel"></span>
+        <div class="icon" aria-hidden="true">
+          <!-- link -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 13.41a2 2 0 0 1 0-2.82l3.18-3.18a2 2 0 1 1 2.83 2.83l-1.41 1.41-1.42 1.42a2 2 0 0 1-2.82 0Zm-5.3 5.3a5 5 0 0 1 0-7.07l2.12-2.13 1.41 1.42L6.7 13.06a3 3 0 0 0 4.24 4.24l2.12-2.12 1.41 1.41-2.12 2.12a5 5 0 0 1-7.07 0Z"/></svg>
         </div>
-      </div>
-    </section>
-  </main>
+        <div class="label">links</div>
+      </button>
 
-  <footer>© <span id="year"></span> Beyza Yıldız</footer>
+      <!-- EXPERIENCE -->
+      <button class="card" data-open="experience" aria-label="experience">
+        <span class="pixel"></span>
+        <div class="icon" aria-hidden="true">
+          <!-- briefcase -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 4h6a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h3V6a2 2 0 0 1 2-2Zm0 4h6V6H9Zm-5 4h16v6H4Z"/></svg>
+        </div>
+        <div class="label">experience</div>
+      </button>
 
-  <!-- Windows / Dialogs -->
-  <dialog id="about">
-    <div class="winbar"><span>about</span><button class="xbtn" data-close>✕</button></div>
+      <!-- FUN -->
+      <button class="card" data-open="fun" aria-label="fun">
+        <span class="pixel"></span>
+        <div class="icon" aria-hidden="true">
+          <!-- joystick -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 3h2v7h1a6 6 0 0 1 6 6v5h-2v-5a4 4 0 0 0-4-4h-2a4 4 0 0 0-4 4v5H6v-5a6 6 0 0 1 6-6h1V3Z"/></svg>
+        </div>
+        <div class="label">fun</div>
+      </button>
+
+      <!-- CONTACT -->
+      <button class="card" data-open="contact" aria-label="contact">
+        <span class="pixel"></span>
+        <div class="icon" aria-hidden="true">
+          <!-- mail -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1l-10 6L2 7Zm0 4.2V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-7.8l-9.12 5.47a2 2 0 0 1-2 0Z"/></svg>
+        </div>
+        <div class="label">contact</div>
+      </button>
+
+      <!-- FAQ -->
+      <button class="card" data-open="faq" aria-label="faq">
+        <span class="pixel"></span>
+        <div class="icon" aria-hidden="true">
+          <!-- question-circle -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm-1 15h2v2h-2Zm1-12a4 4 0 0 1 4 4c0 2.5-3 2.5-3 5h-2c0-3 3-3 3-5a2 2 0 1 0-4 0H8a4 4 0 0 1 4-4Z"/></svg>
+        </div>
+        <div class="label">faq</div>
+      </button>
+    </div>
+    <div class="scan" aria-hidden="true"></div>
+  </div>
+</section>
+
+  </main>  <footer>© <span id="year"></span> Beyza Yıldız</footer>  <!-- windows -->  <dialog id="about">
+    <div class="winbar"><span>about</span><button class="x" data-close>✕</button></div>
     <div class="content">
       <h3>Merhaba! Ben Beyza 👋</h3>
-      <p>AI/ML odaklı bilgisayar mühendisi. Oyun stüdyolarında <b>data & AI</b> takımlarına değer katan ürünler geliştirmeyi seviyorum. Türkçe NLP, LLM değerlendirme ve oyun analitiği ilgi alanlarım.</p>
-      <p>Şu an İstanbul'dayım; yaratıcı veri ürünleri, öneri sistemleri ve oyuncu davranışı analizi üzerine çalışmayı hedefliyorum.</p>
+      <p>AI/ML odaklı bilgisayar mühendisi. Oyun stüdyolarında <b>data & AI</b> ekipleriyle ürün geliştirmeyi seviyorum. Türkçe NLP, LLM değerlendirme ve oyun analitiği ilgi alanlarım.</p>
+      <p>Hedefim: oyuncu deneyimini iyileştiren, gelir etkisi olan veri ürünleri geliştirmek.</p>
     </div>
-  </dialog>
-
-  <dialog id="links">
-    <div class="winbar"><span>links</span><button class="xbtn" data-close>✕</button></div>
+  </dialog>  <dialog id="links">
+    <div class="winbar"><span>links</span><button class="x" data-close>✕</button></div>
     <div class="content">
       <h3>Hızlı Bağlantılar</h3>
-      <div class="linklist">
-        <a href="assets/Beyza_Yildiz_CV.pdf" target="_blank" rel="noopener">📄 CV (PDF) — <b>ilk sırada</b></a>
-        <!-- TODO: cv dosya yolunu güncelle. Eğer repoda yoksa /assets içine ekleyebilirsin. -->
-        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="#" target="_blank" rel="noopener">Portfolio / Demos</a>
-      </div>
-      <a class="cta" href="mailto:yildizbeyzax@gmail.com">İş birliği için mail at</a>
+      <a class="link" href="assets/Beyza_Yildiz_CV.pdf" target="_blank" rel="noopener">📄 CV (PDF) — ilk sırada</a>
+      <a class="link" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+      <a class="link" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="link" href="#" target="_blank" rel="noopener">Portfolio / Demos</a>
     </div>
-  </dialog>
-
-  <dialog id="experience">
-    <div class="winbar"><span>experience</span><button class="xbtn" data-close>✕</button></div>
+  </dialog>  <dialog id="experience">
+    <div class="winbar"><span>experience</span><button class="x" data-close>✕</button></div>
     <div class="content">
-      <h3>Deneyim (kısa)</h3>
+      <h3>Deneyim (özet)</h3>
       <ul>
-        <li><b>AI‑ML Engineering Intern</b> — ICRYPEX: NFT öneri motoru, vektör arama (Pinecone), Python.</li>
-        <li><b>AI‑ML Engineering Intern</b> — Cumhurbaşkanlığı DDO: ROS, C++, OpenCV; yüz tanıma & konuşma‑metin.</li>
-        <li><b>Back‑End Intern</b> — DogGO: Scala, Cassandra; servis geliştirme.</li>
-        <li><b>SDP‑II</b>: Türkçe çekirdek başvuru çözümleme; LLM kıyaslama, MUC/B³/CEAF metrikleri.</li>
+        <li><b>AI‑ML Intern</b> — ICRYPEX: NFT öneri, Pinecone, Python.</li>
+        <li><b>AI‑ML Intern</b> — C. DDO: ROS, C++, OpenCV; yüz tanıma & konuşma‑metin.</li>
+        <li><b>Back‑End Intern</b> — DogGO: Scala, Cassandra.</li>
+        <li><b>SDP‑II</b> — TR coreference & LLM benchmark (MUC/B³/CEAF).</li>
       </ul>
-      <p>Daha detay için CV'ye bakabilirsin.</p>
     </div>
-  </dialog>
-
-  <dialog id="fun">
-    <div class="winbar"><span>fun</span><button class="xbtn" data-close>✕</button></div>
+  </dialog>  <dialog id="fun">
+    <div class="winbar"><span>fun</span><button class="x" data-close>✕</button></div>
     <div class="content">
       <h3>Fun Zone 🎮</h3>
-      <p>Studio Ghibli esintileri, mini oyun fikirleri ve pixel‑art deneyleri. Yakında küçük bir web oyunu eklenecek!</p>
       <ul>
-        <li>🕹️ <i>WIP:</i> Küçük bir “jump” mini‑game.</li>
-        <li>🎨 3D printing & DIY: özel hediyeler, tasarımlar.</li>
+        <li>Mini 2D arcade denemeleri (yakında).</li>
+        <li>3D printing & DIY projeleri.</li>
       </ul>
     </div>
-  </dialog>
-
-  <dialog id="contact">
-    <div class="winbar"><span>contact</span><button class="xbtn" data-close>✕</button></div>
+  </dialog>  <dialog id="contact">
+    <div class="winbar"><span>contact</span><button class="x" data-close>✕</button></div>
     <div class="content">
       <h3>İletişim</h3>
       <p><b>E‑posta:</b> <a href="mailto:yildizbeyzax@gmail.com">yildizbeyzax@gmail.com</a></p>
       <p><b>Konum:</b> İstanbul, Türkiye (UTC+3)</p>
     </div>
-  </dialog>
-
-  <dialog id="faq">
-    <div class="winbar"><span>faq</span><button class="xbtn" data-close>✕</button></div>
+  </dialog>  <dialog id="faq">
+    <div class="winbar"><span>faq</span><button class="x" data-close>✕</button></div>
     <div class="content">
       <h3>SSS</h3>
       <ul>
-        <li><b>Night mode var mı?</b> Sol üstteki ☀︎ ikonuna tıkla; 🌙/☀︎ arasında geçiş yapar.</li>
-        <li><b>CV nerede?</b> <i>Links</i> penceresinde en üstte. Dosya yolunu <code>assets/Beyza_Yildiz_CV.pdf</code> olarak ayarla.</li>
-        <li><b>Kaynak kod?</b> Bu sitenin tamamı tek sayfa HTML/CSS/JS.</li>
+        <li><b>Dark/Light?</b> Sol üst 🌙 ile değiştir.</li>
+        <li><b>CV?</b> <i>Links</i> penceresinde ilk link.</li>
+        <li><b>Kod?</b> Tek sayfa HTML/CSS/JS; görsel gerektirmez.</li>
       </ul>
     </div>
-  </dialog>
-
-  <script>
-    // Year
+  </dialog>  <script>
+    // year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Create subtle drifting stars
-    const starsEl = document.getElementById('stars');
-    const makeStar = () => {
-      const s = document.createElement('div');
-      s.className = 'star';
-      const size = Math.random() * 2.2 + 1.2;
-      s.style.width = s.style.height = size + 'px';
-      s.style.left = Math.random()*100 + 'vw';
-      s.style.top = Math.random()*100 + 'vh';
-      s.style.opacity = .4 + Math.random()*.6;
-      s.style.setProperty('--speed', (16 + Math.random()*14) + 's');
-      starsEl.appendChild(s);
-    };
-    for(let i=0;i<60;i++) makeStar();
+    // theme toggle
+    const btn = document.getElementById('themeBtn');
+    function setTheme(mode){ document.body.classList.toggle('light', mode==='light'); btn.textContent = mode==='light' ? '☀️' : '🌙'; localStorage.setItem('theme2d', mode); }
+    setTheme(localStorage.getItem('theme2d') || 'dark');
+    btn.addEventListener('click', ()=> setTheme(document.body.classList.contains('light') ? 'dark' : 'light'));
 
-    // Modal handling
-    document.querySelectorAll('[data-open]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const id = btn.getAttribute('data-open');
-        const dlg = document.getElementById(id);
-        if(!dlg) return;
-        dlg.showModal();
-      })
+    // modal events
+    document.querySelectorAll('[data-open]').forEach(el=>{
+      el.addEventListener('click', ()=> document.getElementById(el.dataset.open).showModal());
     });
-    document.querySelectorAll('[data-close]').forEach(btn=>{
-      btn.addEventListener('click', (e)=>{
-        const dlg = e.target.closest('dialog');
-        if(dlg) dlg.close();
-      })
+    document.querySelectorAll('[data-close]').forEach(el=>{
+      el.addEventListener('click', (e)=> e.target.closest('dialog').close());
     });
-    // Close dialog on outside click
-    document.querySelectorAll('dialog').forEach(dlg=>{
-      dlg.addEventListener('click', (e)=>{
-        const rect = dlg.getBoundingClientRect();
-        const inDialog = rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
-        if(!inDialog) dlg.close();
-      })
-    })
+    document.querySelectorAll('dialog').forEach(d=>{
+      d.addEventListener('click', (e)=>{ const r=d.getBoundingClientRect(); if(!(r.top<=e.clientY&&e.clientY<=r.bottom&&r.left<=e.clientX&&e.clientX<=r.right)) d.close(); });
+    });
 
-    // Theme toggle (sun/moon)
-    const toggle = document.getElementById('themeToggle');
-    const sunIcon = document.getElementById('sunIcon');
-    function setTheme(mode){
-      document.body.classList.toggle('dark', mode === 'dark');
-      // swap icon
-      sunIcon.innerHTML = mode === 'dark'
-        ? '<path d="M21.64 13a9 9 0 01-10.64-10.64A10 10 0 1021.64 13z"/>'
-        : '<path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zm10.48 14.32l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM12 4V1h0v3zm0 19v-3 3zM4 12H1h3zm19 0h-3 3zM6.76 19.16l-1.42 1.42-1.79-1.8 1.41-1.41 1.8 1.79zM19.16 6.76l1.42-1.42 1.8 1.79-1.41 1.41-1.81-1.78zM12 8a4 4 0 100 8 4 4 0 000-8z"/>';
-      localStorage.setItem('theme', mode);
-    }
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const saved = localStorage.getItem('theme');
-    setTheme(saved ? saved : (prefersDark ? 'dark' : 'light'));
-    toggle.addEventListener('click',()=>{
-      const mode = document.body.classList.contains('dark') ? 'light' : 'dark';
-      setTheme(mode);
-    });
-  </script>
-</body>
+    // tiny starfield on canvas (no image, no libs)
+    const c = document.getElementById('bg');
+    const ctx = c.getContext('2d');
+    let W,H,stars=[]; const N=80;
+    function resize(){ W= c.width = innerWidth; H= c.height = innerHeight; stars = Array.from({length:N},()=>({x:Math.random()*W,y:Math.random()*H,s:Math.random()*1.8+0.6, v:Math.random()*0.2+0.05})) }
+    function step(){ ctx.clearRect(0,0,W,H); ctx.fillStyle='rgba(255,255,255,0.9)'; stars.forEach(st=>{ st.y+= -st.v; if(st.y< -2) st.y=H+2; ctx.beginPath(); ctx.arc(st.x, st.y, st.s, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(step); }
+    addEventListener('resize', resize, {passive:true}); resize(); step();
+  </script></body>
 </html>
