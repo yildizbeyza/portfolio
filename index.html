@@ -1,340 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Beyza — AI/ML Engineer</title>
-<meta name="description" content="Beyza — AI/ML & NLP engineer portfolio with playful, interactive windows."/>
-<style>
-  :root{
-    --bg:#f2f6fb; --card:#ffffff; --ink:#1f2937; --muted:#6b7280; --brand:#ffb34d;
-    --line:#dbe3ee; --shadow:0 10px 30px rgba(0,0,0,.12);
-  }
-  [data-theme="dark"]{
-    --bg:#0b1020; --card:#12182a; --ink:#e6edf3; --muted:#9aa6b2; --brand:#ffd271;
-    --line:#1f2a44; --shadow:0 12px 40px rgba(0,0,0,.45);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu;
-    color:var(--ink);
-    background:
-      radial-gradient(1400px 500px at 50% 110%, rgba(72,166,255,.18),transparent 60%),
-      linear-gradient(180deg, var(--bg), var(--bg));
-    overflow-x:hidden;
-  }
-  /* top bar */
-  .topbar{
-    position:fixed; inset:0 0 auto 0; height:60px; display:flex; align-items:center;
-    padding:0 16px; backdrop-filter:saturate(180%) blur(8px);
-    background:linear-gradient(180deg, rgba(0,0,0,.08),rgba(0,0,0,0)) ;
-    color:var(--ink); z-index:10;
-  }
-  .brand{display:flex; gap:10px; align-items:center; font-weight:700; letter-spacing:.2px}
-  .star{width:28px; height:28px; filter:drop-shadow(0 3px 6px rgba(0,0,0,.25)); animation:float 3s ease-in-out infinite}
-  @keyframes float {0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-  .spacer{flex:1}
-  .chip{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.35)}
-  .btn{border:1px solid var(--line); background:var(--card); color:var(--ink); padding:8px 12px; border-radius:10px; cursor:pointer}
-  .btn:hover{transform:translateY(-1px); box-shadow:var(--shadow)}
-  .dock{
-    position:fixed; left:50%; transform:translateX(-50%); bottom:24px; display:flex; gap:14px; z-index:12;
-    padding:8px 12px; background:rgba(255,255,255,.55); border:1px solid var(--line); border-radius:14px; backdrop-filter:blur(8px)
-  }
-  [data-theme="dark"] .dock{background:rgba(20,26,44,.55)}
-  .dock button{all:unset; cursor:pointer; padding:10px 12px; border-radius:10px}
-  .dock button:focus-visible{outline:2px solid var(--brand)}
-  .icon{width:22px; height:22px; opacity:.9}
-  /* window */
-  .win{
-    position:absolute; width:min(900px, 92vw); left:50%; transform:translateX(-50%);
-    background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow);
-    transition:transform .2s ease, box-shadow .2s ease; user-select:none;
-  }
-  .win.dragging{opacity:.96}
-  .titlebar{
-    display:flex; align-items:center; gap:8px; padding:10px 12px; cursor:grab; border-bottom:1px solid var(--line); background:linear-gradient(180deg, rgba(0,0,0,.05), transparent);
-    border-top-left-radius:14px; border-top-right-radius:14px;
-  }
-  .dots{display:flex; gap:6px; margin-right:6px}
-  .dot{width:10px; height:10px; border-radius:50%}
-  .dot.red{background:#ff5f57} .dot.yellow{background:#febc2e} .dot.green{background:#28c840}
-  .title{font-weight:600}
-  .content{padding:22px}
-  .grid{display:grid; grid-template-columns:1fr; gap:16px}
-  @media (min-width:820px){ .grid{grid-template-columns:1.2fr .8fr} }
-  .card{
-    border:1px solid var(--line); border-radius:12px; padding:16px; background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
-  }
-  h1{font-size:28px; margin:0 0 6px}
-  h2{font-size:18px; margin:0 0 10px; color:var(--muted); font-weight:600}
-  .lead{font-size:15px; color:var(--muted)}
-  .tag{display:inline-block; padding:4px 8px; border:1px solid var(--line); border-radius:999px; margin:4px 6px 0 0; font-size:12px}
-  .projects{display:grid; grid-template-columns:1fr; gap:12px}
-  @media (min-width:640px){ .projects{grid-template-columns:repeat(2,1fr)} }
-  .proj{
-    padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--card); transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .proj:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
-  .proj h3{margin:0 0 6px; font-size:16px}
-  .proj p{margin:0; color:var(--muted); font-size:14px}
-  .link{color:#0ea5e9; text-decoration:none; font-weight:600}
-  .buttons{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-  .button{border:1px solid var(--line); padding:8px 12px; border-radius:10px; text-decoration:none; color:var(--ink); background:var(--card)}
-  .button:hover{box-shadow:var(--shadow); transform:translateY(-1px)}
-  .mini{font-size:12px; color:var(--muted)}
-  .resume a{display:inline-flex; align-items:center; gap:8px}
-  .pill{display:inline-flex; align-items:center; gap:8px; border:1px dashed var(--line); padding:8px 12px; border-radius:999px}
-  .note{font-size:13px; color:var(--muted)}
-  .kbd{font:12px/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono"; background:rgba(0,0,0,.08); border:1px solid var(--line); padding:2px 6px; border-radius:6px}
-  /* placements */
-  #home{top:86px}
-  #work{top:160px}
-  #play{top:240px}
-  #resume{top:320px}
-  #contact{top:400px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beyza — Arcade Portfolio</title>
+  <meta name="description" content="Beyza Yıldız — arcade‑style personal site" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f4fbff;
+      --bg-accent:#cde9ff;
+      --panel:#ffffff;
+      --panel-2:#f1f5ff;
+      --text:#111827;
+      --muted:#4b5563;
+      --brand:#ffb000;
+      --brand-2:#4fd1ff;
+      --shadow: 0 18px 40px rgba(0,0,0,.15);
+      --scan: linear-gradient(rgba(255,255,255,.03) 50%, rgba(0,0,0,.03) 50%);
+    }
+    body.dark{
+      --bg:#0e1216;
+      --bg-accent:#0b2230;
+      --panel:#0f1621;
+      --panel-2:#0c1a26;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --brand:#ffd166;
+      --brand-2:#7dd3fc;
+      --shadow: 0 18px 40px rgba(0,0,0,.55);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      color:var(--text);
+      background: linear-gradient(var(--bg) 60%, var(--bg-accent));
+      overflow-x:hidden;
+    }
+
+    /* --- Subtle moving arcade background --- */
+    .sky{
+      position:fixed; inset:0; overflow:hidden; z-index:-2;
+      background: radial-gradient(1200px 800px at 50% 120%, var(--bg-accent), transparent 60%),
+                  linear-gradient(var(--bg), var(--bg-accent));
+    }
+    .stars{position:absolute; inset:0; z-index:-1;}
+    .star{position:absolute; width:3px; height:3px; background:#fff; opacity:.8; filter:drop-shadow(0 0 4px #fff);
+      animation: drift var(--speed, 18s) linear infinite;
+    }
+    @keyframes drift{from{transform:translateY(100vh)} to{transform:translateY(-10vh)}}
+    /* pixel clouds */
+    .cloud{position:absolute; width:240px; height:120px; background:var(--panel-2); border:2px solid #00000010; box-shadow: var(--shadow);
+      clip-path: polygon(0 70%, 6% 60%, 10% 70%, 18% 58%, 24% 70%, 30% 60%, 36% 70%, 44% 58%, 52% 70%, 60% 60%, 68% 72%, 76% 62%, 84% 74%, 92% 66%, 100% 76%, 100% 100%,0 100%);
+      opacity:.35; filter:saturate(.9);
+      animation: float var(--cspd, 40s) linear infinite;
+    }
+    @keyframes float{from{transform:translateX(-20vw)} to{transform:translateX(120vw)}}
+
+    /* --- Sun/Moon toggle --- */
+    .topbar{position:fixed; left:14px; top:14px; display:flex; gap:10px; align-items:center; z-index:50}
+    .toggle{width:38px; height:38px; border-radius:10px; border:2px solid #00000015; background:var(--panel); box-shadow: var(--shadow); display:grid; place-items:center; cursor:pointer}
+    .toggle svg{width:22px; height:22px; fill:var(--brand);}
+
+    /* --- Retro screen --- */
+    .wrap{display:grid; place-items:center; min-height:100vh; padding:60px 18px}
+    .monitor{position:relative; width:min(940px, 92vw); background:var(--panel); border-radius:18px; box-shadow: var(--shadow); border:3px solid #00000020}
+    .monitor:before{content:""; position:absolute; inset:0; background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.04) 0 2px, transparent 2px 4px);
+      mix-blend-mode: overlay; pointer-events:none; opacity:.7; border-radius:16px}
+    .taskbar{background:#2e2e2e; color:#fff; font-weight:600; letter-spacing:.02em; border-radius:14px 14px 0 0; padding:12px 16px; font-size:14px; font-family:"Press Start 2P", system-ui;}
+
+    .screen{padding:28px; display:grid; gap:26px}
+    .title{font-weight:800; font-size:clamp(28px, 5vw, 46px); letter-spacing:.3px}
+    .subtitle{color:var(--muted); font-size:clamp(14px, 2.4vw, 18px)}
+
+    /* icon grid */
+    .grid{display:grid; grid-template-columns: repeat(3,minmax(160px, 1fr)); gap:18px; justify-items:center}
+    .iconcard{background:var(--panel-2); border:2px solid #00000010; border-radius:18px; padding:18px 14px; width:100%; aspect-ratio: 4/3; display:grid; place-items:center; gap:10px; cursor:pointer; transition:.2s transform, .2s filter}
+    .iconcard:hover{transform:translateY(-4px);}
+    .iconcard svg{width:54px; height:54px;}
+    .label{font-family:"Press Start 2P", system-ui; font-size:12px; text-transform:lowercase}
+
+    /* Modal (retro window) */
+    dialog{border:0; padding:0; border-radius:12px; width:min(760px, 92vw); background:var(--panel); color:var(--text); box-shadow: var(--shadow)}
+    .winbar{background:#3b3b3b; color:#fff; padding:10px 14px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center; font-family:"Press Start 2P"; font-size:12px}
+    .content{padding:18px 18px 24px; line-height:1.6}
+    .content h3{margin:.4rem 0 0.6rem; font-size:20px}
+    .content p{margin:.4rem 0; color:var(--text)}
+    .content ul{margin:.6rem 0 1rem 1.2rem}
+    .content li{margin:.25rem 0}
+    .xbtn{all:unset; cursor:pointer; font-weight:800}
+    .linklist a{display:block; padding:.45rem .6rem; border-radius:10px; text-decoration:none; color:var(--text); background:var(--panel-2); border:1px solid #00000010; margin:.35rem 0}
+    .linklist a:hover{filter:brightness(1.05)}
+    .cta{display:inline-block; margin-top:.5rem; background:var(--brand); color:#1f2937; padding:.55rem .8rem; border-radius:10px; text-decoration:none; font-weight:800}
+
+    footer{display:grid; place-items:center; padding:18px; color:var(--muted); font-size:13px}
+
+    /* small screens */
+    @media (max-width:720px){
+      .grid{grid-template-columns: repeat(2, minmax(140px, 1fr));}
+    }
+  </style>
 </head>
 <body>
-
-  <!-- top bar -->
-  <div class="topbar" role="navigation" aria-label="Global">
-    <div class="brand">
-      <svg class="star" viewBox="0 0 64 64" aria-hidden="true"><path fill="#FFD36E" d="M31.7 6.7c1.1-2.5 4.5-2.5 5.6 0l4.6 10.5c.5 1.1 1.5 1.8 2.7 1.9l11.4 1c2.7.2 3.8 3.6 1.8 5.4l-8.6 7.7c-.9.8-1.2 2.1-.9 3.3l2.7 10.9c.7 2.6-2.1 4.7-4.4 3.3l-9.8-6.1c-1-.6-2.2-.6-3.2 0l-9.8 6.1c-2.3 1.4-5.1-.7-4.4-3.3l2.7-10.9c.3-1.2 0-2.5-.9-3.3l-8.6-7.7c-2-1.8-1-5.2 1.8-5.4l11.4-1c1.2-.1 2.2-.8 2.7-1.9l4.6-10.5z"/></svg>
-      <span>Beyza</span>
-      <span class="chip" title="ADHD is my superpower">ADHD ⚡ focus</span>
-    </div>
-    <div class="spacer"></div>
-    <button class="btn" id="themeBtn" aria-label="Toggle theme">Toggle theme</button>
+  <div class="sky" aria-hidden="true">
+    <div class="stars" id="stars"></div>
+    <div class="cloud" style="--cspd:36s; top:18%; left:-20%;"></div>
+    <div class="cloud" style="--cspd:48s; top:38%; left:-10%; width:300px"></div>
+    <div class="cloud" style="--cspd:60s; top:62%; left:-30%; width:280px"></div>
   </div>
 
-  <!-- windows -->
-  <section id="home" class="win" aria-label="Intro window">
-    <div class="titlebar" data-drag="#home"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">home</div></div>
-    <div class="content">
-      <div class="grid">
-        <div class="card">
-          <h1>Hi, I’m <span style="color:var(--brand)">Beyza</span> — AI/ML Engineer</h1>
-          <p class="lead">
-            Computer Engineering (MEF, ABET) graduate specialized in <b>NLP</b>, <b>Recommenders</b>, and <b>data-driven product science</b>.
-            I love turning messy data into delightful, measurable impact.
-          </p>
-          <div class="buttons">
-            <a class="button" href="#work" onclick="focusWin('work')">See Work</a>
-            <a class="button" href="#resume" onclick="focusWin('resume')">Resume</a>
-            <a class="button" href="mailto:yildizbeyzax@gmail.com">Email me</a>
-          </div>
-          <p class="note" style="margin-top:10px">
-            Shortcuts: <span class="kbd">1</span> Home <span class="kbd">2</span> Work <span class="kbd">3</span> Playground <span class="kbd">4</span> Resume <span class="kbd">5</span> Contact
-          </p>
-        </div>
-        <div class="card">
-          <h2>Strengths</h2>
-          <div class="tag">NLP (Turkish Coreference)</div>
-          <div class="tag">Recommenders</div>
-          <div class="tag">Experimentation / A/B</div>
-          <div class="tag">Python • PyTorch • Sklearn</div>
-          <div class="tag">SQL • Data Pipelines</div>
-          <div class="tag">Unity (beginner)</div>
-          <p class="mini" style="margin-top:10px">
-            ADHD-friendly systems thinker • fast prototyper • talks to humans & machines with equal joy ✨
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="work" class="win" aria-label="Work window">
-    <div class="titlebar" data-drag="#work"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">work</div></div>
-    <div class="content">
-      <div class="card">
-        <h2>Selected Projects</h2>
-        <div class="projects">
-          <div class="proj">
-            <h3>Turkish Coreference Benchmarking (LLMs)</h3>
-            <p>Prompt & eval pipeline; MUC/B³/CEAF metrics; dropped pronouns & nested mentions handling.</p>
-            <div class="buttons">
-              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Code</a>
-              <a class="button" href="#" onclick="openToast('Ask me about dataset & metrics!')">Notes</a>
-            </div>
-          </div>
-          <div class="proj">
-            <h3>Video Platform Recommender + Churn</h3>
-            <p>End-to-end ML (feature store, training, offline/online eval), content-user hybrid ranking.</p>
-            <div class="buttons">
-              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Code</a>
-              <a class="button" href="#" onclick="openToast('AB tests & uplift modeling ❤️')">Notes</a>
-            </div>
-          </div>
-          <div class="proj">
-            <h3>NFT Recommender (ICRYPEX)</h3>
-            <p>Prototyped candidate generation & re-ranking with embeddings (Pinecone) + Python services.</p>
-            <div class="buttons">
-              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Artifacts</a>
-            </div>
-          </div>
-          <div class="proj">
-            <h3>Face Recognition for Assistant Robot</h3>
-            <p>Evaluated FaceNet/DeepFace/GCV; OpenCV pipeline; speech-to-text integration.</p>
-            <div class="buttons">
-              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Report</a>
-            </div>
-          </div>
-          <div class="proj">
-            <h3>ARM Cortex-A9 Microprocessor Labs</h3>
-            <p>Interrupts, private timers, HEX display games; clean ISRs and memory-mapped IO fun.</p>
-            <div class="buttons">
-              <a class="button" href="https://github.com/yildizbeyza" target="_blank">Snippets</a>
-            </div>
-          </div>
-          <div class="proj">
-            <h3>Teaching & Mentoring</h3>
-            <p>MEF UTA for Programming & Digital Systems; built reproducible notebooks & rubrics.</p>
-            <div class="buttons">
-              <a class="button" href="https://www.linkedin.com/in/beyzanuryildiz" target="_blank">Highlights</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Tech I use</h2>
-        <div class="tag">Python</div><div class="tag">PyTorch</div><div class="tag">scikit-learn</div>
-        <div class="tag">HuggingFace</div><div class="tag">SQL</div><div class="tag">pandas</div>
-        <div class="tag">Airflow (basics)</div><div class="tag">GCP/AWS (basics)</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="play" class="win" aria-label="Playground window">
-    <div class="titlebar" data-drag="#play"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">playground</div></div>
-    <div class="content">
-      <div class="card">
-        <h2>Mini Demos</h2>
-        <p class="lead">Tiny toys & experiments I build to learn faster. (More coming!)</p>
-        <div class="projects">
-          <div class="proj">
-            <h3>Prompt Playground</h3>
-            <p>Side-by-side prompts for Turkish pronoun resolution; exportable CSVs.</p>
-            <div class="buttons">
-              <a class="button" href="#" onclick="openToast('Demo link placeholder ✨')">Open</a>
-            </div>
-          </div>
-          <div class="proj">
-            <h3>AB Test Visualizer</h3>
-            <p>Simulates retention/LTV lifts with Bayesian posteriors; fun sliders.</p>
-            <div class="buttons">
-              <a class="button" href="#" onclick="openToast('Coming soon!')">Open</a>
-            </div>
-          </div>
-        </div>
-        <p class="mini" style="margin-top:10px">If you like playful learning, we’ll get along really well 🤝</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="resume" class="win" aria-label="Resume window">
-    <div class="titlebar" data-drag="#resume"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">resume</div></div>
-    <div class="content">
-      <div class="card resume">
-        <h2>Resume</h2>
-        <p class="pill">ABET-accredited MEF CE • AI/ML focus • NLP & Recommenders • Data-driven product</p>
-        <p style="margin-top:10px">
-          <a class="button" href="CV_BEYZA_YILDIZ.pdf" target="_blank" rel="noopener">📄 Download PDF</a>
-          <a class="button" href="https://www.linkedin.com/in/beyzanuryildiz" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="button" href="https://github.com/yildizbeyza" target="_blank" rel="noopener">GitHub</a>
-        </p>
-        <p class="note">Prefer a one-page brief? Ping me—happy to tailor to role (DS / AI Eng / Game Data).</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact" class="win" aria-label="Contact window">
-    <div class="titlebar" data-drag="#contact"><div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="title">contact</div></div>
-    <div class="content">
-      <div class="card">
-        <h2>Say hi 👋</h2>
-        <p>Email: <a class="link" href="mailto:yildizbeyzax@gmail.com">yildizbeyzax@gmail.com</a></p>
-        <p>Also on <a class="link" href="https://www.linkedin.com/in/beyzanuryildiz" target="_blank">LinkedIn</a> and <a class="link" href="https://github.com/yildizbeyza" target="_blank">GitHub</a>.</p>
-        <p class="mini">I value kind teams, playful rigor, and building things users actually love.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- dock -->
-  <div class="dock" aria-label="Dock">
-    <button onclick="focusWin('home')" title="Home (1)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M12 3 2 12h3v8h6v-5h2v5h6v-8h3z'/%3E%3C/svg%3E"/></button>
-    <button onclick="focusWin('work')" title="Work (2)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M4 7h16v10H4zm5-3h6v2H9z'/%3E%3C/svg%3E"/></button>
-    <button onclick="focusWin('play')" title="Playground (3)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M8 5v14l11-7z'/%3E%3C/svg%3E"/></button>
-    <button onclick="focusWin('resume')" title="Resume (4)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M6 2h9l5 5v15H6zM14 2v6h6'/%3E%3C/svg%3E"/></button>
-    <button onclick="focusWin('contact')" title="Contact (5)"><img class="icon" alt="" src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='currentColor' d='M21 8v8a2 2 0 0 1-2 2H5l-4 4V6a2 2 0 0 1 2-2h12'/%3E%3C/svg%3E"/></button>
+  <div class="topbar">
+    <button class="toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+      <!-- Sun/Moon swap via JS -->
+      <svg id="sunIcon" viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zm10.48 14.32l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM12 4V1h0v3zm0 19v-3 3zM4 12H1h3zm19 0h-3 3zM6.76 19.16l-1.42 1.42-1.79-1.8 1.41-1.41 1.8 1.79zM19.16 6.76l1.42-1.42 1.8 1.79-1.41 1.41-1.81-1.78zM12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+    </button>
   </div>
 
-<script>
-  // theme
-  const root = document.documentElement;
-  const btn = document.getElementById('themeBtn');
-  const saved = localStorage.getItem('theme');
-  if(saved){ root.setAttribute('data-theme', saved); }
-  btn.onclick = ()=> {
-    const t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', t); localStorage.setItem('theme', t);
-  };
+  <main class="wrap">
+    <section class="monitor" role="region" aria-label="Retro computer">
+      <div class="taskbar">home</div>
+      <div class="screen">
+        <div>
+          <div class="title">hi! i'm <span style="color:var(--brand)">beyza</span></div>
+          <div class="subtitle">ai/ml engineer • data & game analytics enthusiast • web tinkerer</div>
+        </div>
+        <div class="grid" role="list">
+          <button class="iconcard" data-open="about" role="listitem" aria-label="about">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M11 17h2v-6h-2v6zm0-8h2V7h-2v2zm1-7C5.48 2 1 6.48 1 12s4.48 10 10 10 10-4.48 10-10S18.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            <div class="label">about</div>
+          </button>
+          <button class="iconcard" data-open="links" aria-label="links">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10.59 13.41a1.996 1.996 0 010-2.83l3.18-3.18a2 2 0 112.83 2.83l-1.41 1.41-1.42 1.42a1.996 1.996 0 01-2.83 0zM7.05 17a3.5 3.5 0 004.95 0l1.41-1.41 1.42-1.42 1.41-1.41a3.5 3.5 0 10-4.95-4.95L10.89 8"/></svg>
+            <div class="label">links</div>
+          </button>
+          <button class="iconcard" data-open="experience" aria-label="experience">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 6V4h-4v2H3v14h18V6h-7zM10 4h4v2h-4V4zm-5 6h14v8H5v-8z"/></svg>
+            <div class="label">experience</div>
+          </button>
+          <button class="iconcard" data-open="fun" aria-label="fun">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 12a5 5 0 0110 0v1h1a3 3 0 110 6H6a3 3 0 110-6h1v-1zm2 1h6v-1a3 3 0 10-6 0v1zM8.5 9A1.5 1.5 0 1010 10.5 1.5 1.5 0 008.5 9zm7 0A1.5 1.5 0 1114 10.5 1.5 1.5 0 0115.5 9z"/></svg>
+            <div class="label">fun</div>
+          </button>
+          <button class="iconcard" data-open="contact" aria-label="contact">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4a2 2 0 00-2 2v12l6-4h12a2 2 0 002-2V6a2 2 0 00-2-2z"/></svg>
+            <div class="label">contact</div>
+          </button>
+          <button class="iconcard" data-open="faq" aria-label="faq">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-5h2c0-2 3-2 3-5a4 4 0 00-8 0h2a2 2 0 114 0c0 2-3 2-3 5z"/></svg>
+            <div class="label">faq</div>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  // focus window helper
-  function focusWin(id){
-    const el = document.getElementById(id);
-    if(!el) return;
-    document.querySelectorAll('.win').forEach(w => w.style.zIndex = 1);
-    el.style.zIndex = 9;
-    el.scrollIntoView({behavior:'smooth', block:'center'});
-  }
+  <footer>© <span id="year"></span> Beyza Yıldız</footer>
 
-  // keyboard shortcuts
-  const order = ['home','work','play','resume','contact'];
-  window.addEventListener('keydown', (e)=>{
-    const i = parseInt(e.key,10);
-    if(i>=1 && i<=5){ focusWin(order[i-1]); }
-  });
+  <!-- Windows / Dialogs -->
+  <dialog id="about">
+    <div class="winbar"><span>about</span><button class="xbtn" data-close>✕</button></div>
+    <div class="content">
+      <h3>Merhaba! Ben Beyza 👋</h3>
+      <p>AI/ML odaklı bilgisayar mühendisi. Oyun stüdyolarında <b>data & AI</b> takımlarına değer katan ürünler geliştirmeyi seviyorum. Türkçe NLP, LLM değerlendirme ve oyun analitiği ilgi alanlarım.</p>
+      <p>Şu an İstanbul'dayım; yaratıcı veri ürünleri, öneri sistemleri ve oyuncu davranışı analizi üzerine çalışmayı hedefliyorum.</p>
+    </div>
+  </dialog>
 
-  // draggable windows
-  document.querySelectorAll('.titlebar').forEach(tb=>{
-    let drag=false, offX=0, offY=0, win=null;
-    tb.addEventListener('pointerdown', (e)=>{
-      drag=true; win=tb.parentElement; win.classList.add('dragging');
-      const r = win.getBoundingClientRect();
-      offX = e.clientX - r.left; offY = e.clientY - r.top;
-      win.setPointerCapture(e.pointerId);
+  <dialog id="links">
+    <div class="winbar"><span>links</span><button class="xbtn" data-close>✕</button></div>
+    <div class="content">
+      <h3>Hızlı Bağlantılar</h3>
+      <div class="linklist">
+        <a href="assets/Beyza_Yildiz_CV.pdf" target="_blank" rel="noopener">📄 CV (PDF) — <b>ilk sırada</b></a>
+        <!-- TODO: cv dosya yolunu güncelle. Eğer repoda yoksa /assets içine ekleyebilirsin. -->
+        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="#" target="_blank" rel="noopener">Portfolio / Demos</a>
+      </div>
+      <a class="cta" href="mailto:yildizbeyzax@gmail.com">İş birliği için mail at</a>
+    </div>
+  </dialog>
+
+  <dialog id="experience">
+    <div class="winbar"><span>experience</span><button class="xbtn" data-close>✕</button></div>
+    <div class="content">
+      <h3>Deneyim (kısa)</h3>
+      <ul>
+        <li><b>AI‑ML Engineering Intern</b> — ICRYPEX: NFT öneri motoru, vektör arama (Pinecone), Python.</li>
+        <li><b>AI‑ML Engineering Intern</b> — Cumhurbaşkanlığı DDO: ROS, C++, OpenCV; yüz tanıma & konuşma‑metin.</li>
+        <li><b>Back‑End Intern</b> — DogGO: Scala, Cassandra; servis geliştirme.</li>
+        <li><b>SDP‑II</b>: Türkçe çekirdek başvuru çözümleme; LLM kıyaslama, MUC/B³/CEAF metrikleri.</li>
+      </ul>
+      <p>Daha detay için CV'ye bakabilirsin.</p>
+    </div>
+  </dialog>
+
+  <dialog id="fun">
+    <div class="winbar"><span>fun</span><button class="xbtn" data-close>✕</button></div>
+    <div class="content">
+      <h3>Fun Zone 🎮</h3>
+      <p>Studio Ghibli esintileri, mini oyun fikirleri ve pixel‑art deneyleri. Yakında küçük bir web oyunu eklenecek!</p>
+      <ul>
+        <li>🕹️ <i>WIP:</i> Küçük bir “jump” mini‑game.</li>
+        <li>🎨 3D printing & DIY: özel hediyeler, tasarımlar.</li>
+      </ul>
+    </div>
+  </dialog>
+
+  <dialog id="contact">
+    <div class="winbar"><span>contact</span><button class="xbtn" data-close>✕</button></div>
+    <div class="content">
+      <h3>İletişim</h3>
+      <p><b>E‑posta:</b> <a href="mailto:yildizbeyzax@gmail.com">yildizbeyzax@gmail.com</a></p>
+      <p><b>Konum:</b> İstanbul, Türkiye (UTC+3)</p>
+    </div>
+  </dialog>
+
+  <dialog id="faq">
+    <div class="winbar"><span>faq</span><button class="xbtn" data-close>✕</button></div>
+    <div class="content">
+      <h3>SSS</h3>
+      <ul>
+        <li><b>Night mode var mı?</b> Sol üstteki ☀︎ ikonuna tıkla; 🌙/☀︎ arasında geçiş yapar.</li>
+        <li><b>CV nerede?</b> <i>Links</i> penceresinde en üstte. Dosya yolunu <code>assets/Beyza_Yildiz_CV.pdf</code> olarak ayarla.</li>
+        <li><b>Kaynak kod?</b> Bu sitenin tamamı tek sayfa HTML/CSS/JS.</li>
+      </ul>
+    </div>
+  </dialog>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Create subtle drifting stars
+    const starsEl = document.getElementById('stars');
+    const makeStar = () => {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.2 + 1.2;
+      s.style.width = s.style.height = size + 'px';
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.top = Math.random()*100 + 'vh';
+      s.style.opacity = .4 + Math.random()*.6;
+      s.style.setProperty('--speed', (16 + Math.random()*14) + 's');
+      starsEl.appendChild(s);
+    };
+    for(let i=0;i<60;i++) makeStar();
+
+    // Modal handling
+    document.querySelectorAll('[data-open]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-open');
+        const dlg = document.getElementById(id);
+        if(!dlg) return;
+        dlg.showModal();
+      })
     });
-    tb.addEventListener('pointermove', (e)=>{
-      if(!drag) return;
-      const x = e.clientX - offX; const y = e.clientY - offY;
-      win.style.left = x + 'px'; win.style.top = Math.max(70, y) + 'px';
-      win.style.transform = 'translateX(0)'; // break initial centering
+    document.querySelectorAll('[data-close]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const dlg = e.target.closest('dialog');
+        if(dlg) dlg.close();
+      })
     });
-    tb.addEventListener('pointerup', ()=>{
-      drag=false; tb.parentElement.classList.remove('dragging');
-    });
-  });
+    // Close dialog on outside click
+    document.querySelectorAll('dialog').forEach(dlg=>{
+      dlg.addEventListener('click', (e)=>{
+        const rect = dlg.getBoundingClientRect();
+        const inDialog = rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
+        if(!inDialog) dlg.close();
+      })
+    })
 
-  // tiny toast
-  let toast;
-  function openToast(msg){
-    if(!toast){
-      toast = document.createElement('div');
-      Object.assign(toast.style, {
-        position:'fixed', left:'50%', transform:'translateX(-50%)',
-        bottom:'90px', background:'var(--card)', color:'var(--ink)',
-        border:'1px solid var(--line)', padding:'10px 14px',
-        borderRadius:'10px', boxShadow:'var(--shadow)', zIndex:20
-      });
-      document.body.appendChild(toast);
+    // Theme toggle (sun/moon)
+    const toggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    function setTheme(mode){
+      document.body.classList.toggle('dark', mode === 'dark');
+      // swap icon
+      sunIcon.innerHTML = mode === 'dark'
+        ? '<path d="M21.64 13a9 9 0 01-10.64-10.64A10 10 0 1021.64 13z"/>'
+        : '<path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zm10.48 14.32l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM12 4V1h0v3zm0 19v-3 3zM4 12H1h3zm19 0h-3 3zM6.76 19.16l-1.42 1.42-1.79-1.8 1.41-1.41 1.8 1.79zM19.16 6.76l1.42-1.42 1.8 1.79-1.41 1.41-1.81-1.78zM12 8a4 4 0 100 8 4 4 0 000-8z"/>';
+      localStorage.setItem('theme', mode);
     }
-    toast.textContent = msg;
-    toast.style.opacity = 1;
-    setTimeout(()=> toast.style.opacity = 0, 2000);
-  }
-</script>
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const saved = localStorage.getItem('theme');
+    setTheme(saved ? saved : (prefersDark ? 'dark' : 'light'));
+    toggle.addEventListener('click',()=>{
+      const mode = document.body.classList.contains('dark') ? 'light' : 'dark';
+      setTheme(mode);
+    });
+  </script>
 </body>
 </html>
