@@ -1,401 +1,378 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Beyza • 3D Portfolio Room</title>
+  <title>Beyza | Portfolio</title>
+  <meta name="description" content="Beyza Yıldız – AI/ML & data‑driven engineer. Projects, experience, writing, and fun stuff." />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{ --bg:#0f1116; --fg:#eaeef2; --muted:#9aa4b2; --accent:#7ee787; --panel:#0b1220; }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; margin:0; background:var(--bg); color:var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji"; }
-    #scene{ position:fixed; inset:0; overflow:hidden; }
-    #labels{ position:fixed; inset:0; pointer-events:none; }
-    #hud{ position:fixed; left:16px; top:16px; z-index:20; display:flex; gap:8px; align-items:center; }
-    .pill{ background:#1b2130aa; border:1px solid #2a3142; padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted); }
-    .pill kbd{ background:#0e1422; border:1px solid #222a3b; padding:2px 6px; border-radius:6px; font-size:11px; }
+    :root{
+      --bg: #0b0c10;
+      --panel: #111217;
+      --panel-2: #171923;
+      --text: #e8eaf0;
+      --muted: #a6adbb;
+      --brand: #7c5cff;
+      --brand-2:#4cc9f0;
+      --ring: rgba(124,92,255,.35);
+      --ok:#00c853; --warn:#ffb300;
+      --shadow: 0 6px 24px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+    }
+    :root.light{
+      --bg: #fbfbfe;
+      --panel: #ffffff;
+      --panel-2: #f5f6fb;
+      --text: #0b1020;
+      --muted: #4d5566;
+      --brand: #6b4cff;
+      --brand-2:#0ea5e9;
+      --ring: rgba(107,76,255,.25);
+      --shadow: 0 8px 24px rgba(14, 20, 40, .08), 0 2px 8px rgba(14, 20, 40, .05);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji"; 
+      background: radial-gradient(1200px 800px at 15% -10%, rgba(124,92,255,.12), transparent 60%),
+                  radial-gradient(1200px 800px at 85% 0%, rgba(76,201,240,.10), transparent 60%),
+                  var(--bg);
+      color:var(--text); line-height:1.55; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:1120px; margin-inline:auto; padding:24px;}
 
-    /* Floating labels above 3D objects */
-    .label{ pointer-events:auto; user-select:none; font-weight:600; font-size:12px; color:#0b1020; background:#79c0ff; border:2px solid #1f6feb; padding:6px 10px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.35); transition:transform .12s ease; }
-    .label:hover{ transform:scale(1.04); }
+    /* Topbar */
+    header{position:sticky; top:0; z-index:20; backdrop-filter:saturate(180%) blur(8px); background:color-mix(in srgb, var(--bg), transparent 20%);}    
+    .topbar{display:flex; align-items:center; gap:16px; padding:12px 24px; border-bottom:1px solid color-mix(in srgb, var(--muted), transparent 75%);}    
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px}
+    .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); box-shadow:0 0 0 6px var(--ring);} 
+    nav{margin-left:auto; display:flex; gap:16px; flex-wrap:wrap}
+    nav a{padding:8px 12px; border-radius:10px; color:var(--muted)}
+    nav a.active, nav a:hover{color:var(--text); background:color-mix(in srgb, var(--brand) 12%, transparent)}
+    .btn{display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%); background:linear-gradient(180deg, var(--panel), var(--panel-2)); box-shadow:var(--shadow);}
+    .btn:hover{transform:translateY(-1px); transition:.2s ease;}
+    .ghost{background:transparent; box-shadow:none}
 
-    /* Modal */
-    .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter: blur(2px); display:none; align-items:center; justify-content:center; z-index:30; }
-    .modal-backdrop.show{ display:flex; }
-    .modal{ width:min(920px, 92vw); max-height:85vh; background:var(--panel); border:1px solid #223049; border-radius:16px; box-shadow:0 24px 60px rgba(0,0,0,.55); overflow:hidden; display:flex; flex-direction:column; }
-    .modal header{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #1c2435; }
-    .modal header h3{ margin:0; font-size:16px; }
-    .modal header button{ background:#111827; color:#cbd5e1; border:1px solid #263246; border-radius:10px; padding:6px 10px; cursor:pointer; }
-    .modal header button:hover{ filter:brightness(1.1); }
-    .modal .body{ padding:18px; overflow:auto; color:#cbd5e1; line-height:1.7; }
-    .modal .body h4{ margin:16px 0 6px; }
-    .modal .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:12px; }
-    .card{ border:1px solid #24324a; border-radius:12px; padding:12px; background:#0f172a; }
-    .card a{ color:var(--accent); text-decoration:none; }
+    /* Hero */
+    .hero{display:grid; grid-template-columns:1.2fr .8fr; gap:28px; padding:28px 0 8px}
+    .badge{display:inline-flex; align-items:center; gap:8px; font-size:.9rem; color:var(--muted); padding:6px 10px; border:1px dashed color-mix(in srgb, var(--muted), transparent 65%); border-radius:999px}
+    h1{font-size:clamp(28px, 3.2vw, 48px); line-height:1.1; margin:14px 0 10px}
+    .lead{font-size:clamp(16px, 1.5vw, 18px); color:var(--muted)}
+    .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
+    .card{background:linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid color-mix(in srgb, var(--muted), transparent 70%); border-radius:18px; padding:18px; box-shadow:var(--shadow)}
 
-    /* Page sections (kept for SEO/fallback) */
-    main{ position:relative; z-index:10; margin-top:100vh; }
-    section{ padding:64px 20px; max-width:920px; margin:0 auto; border-bottom:1px solid #202636; }
-    section h2{ margin:0 0 8px; }
-    section p{ color:var(--muted); line-height:1.7; }
-    .links a{ color:var(--accent); text-decoration:none; border-bottom:1px dashed #2f6; }
+    /* Sections */
+    section{scroll-margin-top:90px; margin:28px 0}
+    .section-title{display:flex; align-items:center; justify-content:space-between; margin:6px 0 16px}
+    .section-title h2{font-size:22px; margin:0}
+    .section-title p{margin:0; color:var(--muted); font-size:.95rem}
+    .grid{display:grid; gap:14px}
+    .grid.cols-2{grid-template-columns:repeat(2, minmax(0,1fr))}
+    .grid.cols-3{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .grid.cols-4{grid-template-columns:repeat(4, minmax(0,1fr))}
+    @media (max-width: 960px){ .hero{grid-template-columns:1fr} .grid.cols-3{grid-template-columns:repeat(2,1fr)} .grid.cols-4{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width: 640px){ .grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr} }
+
+    .pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:color-mix(in srgb, var(--brand) 12%, transparent)}
+    .meta{color:var(--muted); font-size:.9rem}
+    .card h3{margin:6px 0 4px; font-size:18px}
+    .list{display:flex; flex-direction:column; gap:10px}
+    .list li{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid color-mix(in srgb, var(--muted), transparent 70%)}
+    .list small{color:var(--muted)}
+
+    .gallery{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px}
+    .gallery img{width:100%; height:180px; object-fit:cover; border-radius:14px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%)}
+    @media (max-width: 720px){ .gallery{grid-template-columns:1fr 1fr} }
+
+    footer{margin:40px 0 20px; color:var(--muted); font-size:.9rem}
+    .split{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+    .right{margin-left:auto}
+    .kbd{font:600 12px/1 Inter; border:1px solid color-mix(in srgb, var(--muted), transparent 60%); padding:6px 8px; border-radius:8px}
   </style>
 </head>
 <body>
-  <div id="scene"></div>
-  <div id="labels"></div>
-
-  <!-- Loading overlay -->
-  <div id="loading" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:25;background:rgba(8,10,16,.6);backdrop-filter:blur(2px);color:#cbd5e1;font-weight:600;">
-    Loading 3D scene…
-  </div>
-
-  <div id="hud">
-    <span class="pill">Controls: <kbd>drag</kbd> orbit • <kbd>wheel</kbd> zoom • <kbd>right-drag</kbd> pan</span>
-  </div>
-
-  <!-- Simple modal -->
-  <div id="backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal">
-      <header>
-        <h3 id="modal-title">Panel</h3>
-        <button id="modal-close" aria-label="Close">Close (Esc)</button>
-      </header>
-      <div id="modal-body" class="body">Loading…</div>
+  <header>
+    <div class="topbar container">
+      <div class="brand"><span class="dot" aria-hidden="true"></span> Beyza</div>
+      <nav aria-label="Primary">
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#fun">Fun</a>
+        <a href="#travel">Travel</a>
+        <a href="#currently">Currently</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button id="themeBtn" class="btn ghost" aria-label="Toggle theme">🌓</button>
     </div>
-  </div>
+  </header>
 
-  <main>
-    <section id="about"><h2>About</h2><p>Hello! This is a 3D room scene exported from Blender (or a premade model). Click objects in the room to open lightweight panels with content.</p></section>
-    <section id="projects"><h2>Projects</h2><p>Projects, experience, and portfolio items… (replace with your content)</p></section>
-    <section id="hobbies"><h2>Hobbies & Fun</h2><p>Games, hobbies, fun stuff…</p></section>
-    <section id="travel"><h2>Travel</h2><p>Trips, San Francisco Bay Area photos, and small stories…</p></section>
-    <section id="blog"><h2>Blog</h2><p>Medium posts or personal notes…</p></section>
-    <section id="media"><h2>Media / Games</h2><p>Favorite films, games, or analysis…</p></section>
-    <section id="contact"><h2>Contact</h2><p>Email, LinkedIn, etc.</p></section>
-    <section id="links" class="links"><h2>Links</h2><p>
-      <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a> ·
-      <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a> ·
-      <a href="https://medium.com/" target="_blank" rel="noreferrer">Medium</a>
-    </p></section>
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="card">
+        <span class="badge">AI/ML & data‑driven engineer • Istanbul</span>
+        <h1>Hi, I’m Beyza — I build practical, human‑centered experiences with code & data.</h1>
+        <p class="lead">Simple, fast, and delightful. This site is a clean starting point we can grow together — projects, experiments, travels, and the fun bits.
+        </p>
+        <div class="cta-row">
+          <a class="btn" id="spotifyBtn" href="#" target="_blank" rel="noopener">▶︎ Open my Spotify playlist</a>
+          <a class="btn ghost" href="#contact">Get in touch</a>
+          <a class="btn ghost" href="#links">Links</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h2>Quick Links</h2><p class="meta">Edit later with your real URLs</p></div>
+        <div class="grid cols-2">
+          <a class="pill" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+          <a class="pill" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="pill" href="https://medium.com/" target="_blank" rel="noopener">Medium</a>
+          <a class="pill" href="mailto:hello@example.com">Email</a>
+        </div>
+        <p class="meta" style="margin-top:10px">You’ll be able to swap these in <span class="kbd">/script config</span> below.</p>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="section-title">
+        <h2>Projects</h2>
+        <p class="meta">A few highlights — more to come.</p>
+      </div>
+      <div class="grid cols-3">
+        <article class="card">
+          <span class="meta">Python • NLP</span>
+          <h3>Turkish Coreference Benchmark</h3>
+          <p>Evaluating transformer models on Turkish coreference with custom metrics & robust prompts.</p>
+          <a class="pill" href="#">View repo →</a>
+        </article>
+        <article class="card">
+          <span class="meta">Python • Recsys</span>
+          <h3>Streaming Recommendation Engine</h3>
+          <p>Hybrid collaborative + content‑based engine; offline metrics and online A/B‑ready interface.</p>
+          <a class="pill" href="#">Case study →</a>
+        </article>
+        <article class="card">
+          <span class="meta">Web • Three.js</span>
+          <h3>Interactive 3D Room (WIP)</h3>
+          <p>A playful 3D space for portfolio links. Paused for now in favor of a minimal site (this one!).</p>
+          <a class="pill" href="#">Notes →</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <div class="section-title">
+        <h2>Experience</h2>
+        <p class="meta">Latest roles & contributions</p>
+      </div>
+      <ul class="list">
+        <li>
+          <div>
+            <strong>AI/ML Engineering Intern</strong> · ICRYPEX
+            <div class="meta">Built an NFT recommendation prototype (Python, embeddings, Pinecone).</div>
+          </div>
+          <small class="meta">2024</small>
+        </li>
+        <li>
+          <div>
+            <strong>AI/ML Intern</strong> · Presidency of the Republic of Türkiye, DTO
+            <div class="meta">Face recognition & STT on ROS (C++/OpenCV/FaceNet).</div>
+          </div>
+          <small class="meta">2023</small>
+        </li>
+        <li>
+          <div>
+            <strong>Back‑End Intern</strong> · DogGO
+            <div class="meta">Scala + Cassandra services; improved API latency.</div>
+          </div>
+          <small class="meta">2021</small>
+        </li>
+      </ul>
+    </section>
+
+    <!-- PORTFOLIO (selected) -->
+    <section id="portfolio">
+      <div class="section-title">
+        <h2>Portfolio</h2>
+        <p class="meta">Design/dev snapshots</p>
+      </div>
+      <div class="grid cols-3">
+        <a class="card" href="#"><img alt="preview" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" style="width:100%; height:160px; object-fit:cover; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%);"/><h3>LLM Eval Dashboard</h3><p class="meta">A compact UI for prompt tests</p></a>
+        <a class="card" href="#"><img alt="preview" src="https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1200&auto=format&fit=crop" style="width:100%; height:160px; object-fit:cover; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%);"/><h3>Data Story Mini‑site</h3><p class="meta">Narrative + charts</p></a>
+        <a class="card" href="#"><img alt="preview" src="https://images.unsplash.com/photo-1542385151-efd9000785a0?q=80&w=1200&auto=format&fit=crop" style="width:100%; height:160px; object-fit:cover; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%);"/><h3>Playful Micro‑interactions</h3><p class="meta">CSS + JS only</p></a>
+      </div>
+    </section>
+
+    <!-- FUN / HOBBIES -->
+    <section id="fun">
+      <div class="section-title">
+        <h2>Hobbies & Fun Stuff</h2>
+        <p class="meta">Maker bits, games, and tiny experiments</p>
+      </div>
+      <div class="grid cols-3">
+        <article class="card"><h3>3D Printing</h3><p>Prusa vibes, custom frames, fish‑themed prints 🎣</p><span class="meta">Tools: OrcaSlicer, Fusion 360</span></article>
+        <article class="card"><h3>DIY Gifts</h3><p>Keyboard shadow‑boxes, laser‑cut frames, resin art.</p><span class="meta">Because love ≠ AliExpress.</span></article>
+        <article class="card"><h3>Gaming</h3><p>Casual cozy, puzzle, and a dash of roguelike.</p><span class="meta">Now playing: <span id="nowPlaying">—</span></span></article>
+      </div>
+    </section>
+
+    <!-- TRAVEL -->
+    <section id="travel">
+      <div class="section-title">
+        <h2>Travel</h2>
+        <p class="meta">A couple of lighthearted moments</p>
+      </div>
+      <div class="gallery card" aria-label="Travel gallery">
+        <img alt="SF Bay wink" src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?q=80&w=1200&auto=format&fit=crop" />
+        <img alt="Golden Gate" src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?q=80&w=1200&auto=format&fit=crop" />
+        <img alt="Cable car moment" src="https://images.unsplash.com/photo-1518562923427-19e694fbd8e6?q=80&w=1200&auto=format&fit=crop" />
+      </div>
+      <p class="meta" style="margin-top:8px">Caption idea: “I asked for ‘Bay area fog’ and the weather API said ‘say no more.’”</p>
+    </section>
+
+    <!-- CURRENTLY -->
+    <section id="currently">
+      <div class="section-title">
+        <h2>Currently Reading / Watching / Playing</h2>
+        <p class="meta">Auto‑filled via simple config below</p>
+      </div>
+      <div class="grid cols-3">
+        <article class="card">
+          <span class="meta">Book</span>
+          <h3 id="bookTitle">—</h3>
+          <p id="bookNote" class="meta">—</p>
+          <a class="pill" id="bookUrl" href="#" target="_blank" rel="noopener">Open →</a>
+        </article>
+        <article class="card">
+          <span class="meta">Film</span>
+          <h3 id="filmTitle">—</h3>
+          <p id="filmNote" class="meta">—</p>
+          <a class="pill" id="filmUrl" href="#" target="_blank" rel="noopener">Open →</a>
+        </article>
+        <article class="card">
+          <span class="meta">Blog</span>
+          <h3 id="blogTitle">—</h3>
+          <p id="blogNote" class="meta">—</p>
+          <a class="pill" id="blogUrl" href="#" target="_blank" rel="noopener">Open →</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="section-title">
+        <h2>About</h2>
+        <p class="meta">Short & friendly</p>
+      </div>
+      <div class="card">
+        <p>
+          I’m a computer engineer focused on AI/ML and data‑driven products. I love shipping small, useful things — from ML evaluation tools to playful web experiments. I care about clarity, accessibility, and the little details that make experiences feel human.
+        </p>
+      </div>
+    </section>
+
+    <!-- CONTACT / LINKS -->
+    <section id="contact">
+      <div class="section-title">
+        <h2>Contact</h2>
+        <p class="meta">Open to opportunities, collabs, and coffee.</p>
+      </div>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Say hello</h3>
+          <p class="meta">Email · LinkedIn · GitHub · Medium</p>
+          <div class="grid cols-2" id="links"></div>
+        </div>
+        <div class="card">
+          <h3>Small note</h3>
+          <p>Prefer async messages; I’ll reply as soon as I can. For quick chats, mention context + goals to speed things up.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="container">
+      <div class="split">
+        <span>© <span id="year"></span> Beyza</span>
+        <span class="right">Built with plain HTML/CSS/JS · <span class="meta">No frameworks</span></span>
+      </div>
+    </footer>
   </main>
 
-  <!-- Three.js (module) -->
-  <script type="module">
-    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
-    import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
-    import { DRACOLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/DRACOLoader.js';
-    import { CSS2DRenderer, CSS2DObject } from 'https://unpkg.com/three@0.160.0/examples/jsm/renderers/CSS2DRenderer.js';
+  <script>
+    // ---------- Lightweight site config (edit only this object) ----------
+    const CONFIG = {
+      theme: 'auto', // 'dark' | 'light' | 'auto'
+      spotifyPlaylist: 'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M',
+      links: [
+        { label: 'GitHub', url: 'https://github.com/your-username' },
+        { label: 'LinkedIn', url: 'https://www.linkedin.com/in/your-handle' },
+        { label: 'Medium', url: 'https://medium.com/@your-handle' },
+        { label: 'Email', url: 'mailto:hello@example.com' }
+      ],
+      nowPlaying: 'Stardew Valley',
+      book: { title: 'Atomic Habits', url: 'https://jamesclear.com/atomic-habits', note: 'Tiny changes, compounding effects.' },
+      film: { title: 'Se7en (1995)', url: 'https://www.imdb.com/title/tt0114369/', note: 'Descent into the abyss, brilliantly paced.' },
+      blog: { title: 'The “boring” roadmap', url: 'https://martinfowler.com/', note: 'Simplicity scales; process beats chaos.' }
+    };
 
-    // ---- Basic scene setup ----
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f1116);
+    // ---------- Theme handling ----------
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const applyTheme = (mode)=>{
+      const light = mode === 'light' || (mode==='auto' && !prefersDark);
+      root.classList.toggle('light', light);
+      localStorage.setItem('theme', mode);
+    }
+    applyTheme(saved || CONFIG.theme);
+    document.getElementById('themeBtn').addEventListener('click',()=>{
+      const current = localStorage.getItem('theme') || CONFIG.theme;
+      const next = current==='dark' ? 'light' : current==='light' ? 'auto' : 'dark';
+      applyTheme(next);
+    });
 
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(3.2, 2.1, 3.4);
+    // ---------- Populate dynamic bits ----------
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('spotifyBtn').href = CONFIG.spotifyPlaylist;
+    document.getElementById('nowPlaying').textContent = CONFIG.nowPlaying;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    document.getElementById('scene').appendChild(renderer.domElement);
+    const linkWrap = document.getElementById('links');
+    CONFIG.links.forEach(l=>{
+      const a = document.createElement('a');
+      a.className = 'pill'; a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = l.label; linkWrap.appendChild(a);
+    });
 
-    const labelRenderer = new CSS2DRenderer();
-    labelRenderer.setSize(window.innerWidth, window.innerHeight);
-    labelRenderer.domElement.style.position = 'absolute';
-    labelRenderer.domElement.style.top = '0';
-    labelRenderer.domElement.style.pointerEvents = 'none';
-    document.getElementById('labels').appendChild(labelRenderer.domElement);
+    const setCard = (prefix, data)=>{
+      document.getElementById(prefix+'Title').textContent = data.title;
+      document.getElementById(prefix+'Note').textContent = data.note;
+      document.getElementById(prefix+'Url').href = data.url;
+    }
+    setCard('book', CONFIG.book);
+    setCard('film', CONFIG.film);
+    setCard('blog', CONFIG.blog);
 
-    // Lights
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x223344, 0.8));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
-    dirLight.position.set(3, 5, 2);
-    scene.add(dirLight);
-
-    // Controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.target.set(0, 0.9, 0);
-
-    // Loader (GLTF + optional Draco)
-    let modelRoot = null;
-    let loaded = false;
-    const loader = new GLTFLoader();
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
-    loader.setDRACOLoader(dracoLoader);
-
-    const startTs = performance.now();
-    const failbackTimer = setTimeout(()=>{
-      if(!loaded){
-        console.warn('[Loader] Fallback timer fired — GLB taking too long.');
-        addFallbackCube();
-        setLoadingText('Taking long to load GLB. Showing fallback scene.');
-        hideLoading();
-      }
-    }, 6000);
-        setLoadingText('Loaded fallback cube (GLB not found yet)…');
-      }
-    }, 4500);
-
-    loader.load('./assets/room.glb?v=4', (gltf) => {
-      loaded = true;
-      clearTimeout(failbackTimer);
-      modelRoot = gltf.scene;
-      scene.add(modelRoot);
-
-      const names = [];
-      modelRoot.traverse(o => { if (o.isObject3D) names.push(o.name); });
-      console.log('[Names in model]', names);
-
-      frameObject(modelRoot);
-      addClickableLabels();
-      hideLoading();
-    }, (evt)=>{
-      try{
-        if(evt && evt.total){
-          const pct = Math.round((evt.loaded/evt.total)*100);
-          setLoadingText(`Loading 3D scene… ${pct}%`);
+    // ---------- Active link highlight ----------
+    const navLinks = Array.from(document.querySelectorAll('nav a'));
+    const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const id = '#'+e.target.id;
+          navLinks.forEach(l=>l.classList.toggle('active', l.getAttribute('href')===id));
         }
-      }catch{ /* ignore */ }
-    }, (err) => {
-      console.error('Failed to load GLB:', err);
-      setLoadingText('Failed to load GLB. Showing fallback scene.');
-      addFallbackCube();
-      hideLoading();
-    });
-      modelRoot = gltf.scene;
-      scene.add(modelRoot);
+      })
+    }, { rootMargin: '-50% 0px -45% 0px', threshold: [0, 1]});
+    sections.forEach(s => io.observe(s));
 
-      const names = [];
-      modelRoot.traverse(o => { if (o.isObject3D) names.push(o.name); });
-      console.log('[Names in model]', names);
-
-      hideLoading();
-      frameObject(modelRoot);
-      addClickableLabels();
-    }, undefined, (err) => {
-      console.error('Failed to load GLB:', err);
-      setLoadingText('Failed to load GLB. Showing fallback cube.');
-      addFallbackCube();
-    });
-
-      // Log object names for debugging
-      const names = [];
-      modelRoot.traverse(o => { if (o.isObject3D) names.push(o.name); });
-      console.log('[Names in model]', names);
-
-      // Auto-frame camera to the loaded model
-      frameObject(modelRoot);
-
-      addClickableLabels();
-    }, undefined, (err) => {
-      console.error('Failed to load GLB:', err);
-    });
-
-    // ---- Simple modal system ----
-    const backdrop = document.getElementById('backdrop');
-    const modalTitle = document.getElementById('modal-title');
-    const modalBody  = document.getElementById('modal-body');
-    document.getElementById('modal-close').addEventListener('click', closeModal);
-    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
-
-    function openModal(title, html){
-      modalTitle.textContent = title;
-      modalBody.innerHTML = html;
-      backdrop.classList.add('show');
-      backdrop.setAttribute('aria-hidden','false');
-    }
-    function closeModal(){
-      backdrop.classList.remove('show');
-      backdrop.setAttribute('aria-hidden','true');
-    }
-
-    // Content for each object (edit freely)
-    const modalContent = {
-      speakers: {
-        title: 'Playlist',
-        html: `
-          <p>My current focus playlist. Opens in a new tab.</p>
-          <div class="grid">
-            <div class="card"><a href="https://open.spotify.com/" target="_blank" rel="noreferrer">Open Spotify</a></div>
-          </div>
-        `
-      },
-      desk: {
-        title: 'Projects & Portfolio',
-        html: `
-          <div class="grid">
-            <div class="card">
-              <h4>LLM Benchmarking (TR Coreference)</h4>
-              <p>Evaluation pipeline, datasets, and metrics (MUC, B³, CEAF).</p>
-              <a href="#">View details</a>
-            </div>
-            <div class="card">
-              <h4>Churn Prediction & Recsys</h4>
-              <p>Video streaming analytics, segmentation, and a chatbot.</p>
-              <a href="#">View details</a>
-            </div>
-          </div>
-        `
-      },
-      sofa_1: { title: 'Hobbies & Fun', html: `<p>Games I play, DIY, 3D printing, and small experiments.</p>` },
-      sofa_2: { title: 'Hobbies & Fun', html: `<p>A second cozy corner with similar vibes.</p>` },
-      globe:  { title: 'Travel', html: `<p>Mini stories and photos from trips (SF Bay Area etc.).</p>` },
-      books:  { title: 'Blog',   html: `<p>Selected posts and notes. <a href="https://medium.com/" target="_blank">Medium</a></p>` },
-      phone:  { title: 'Contact',html: `<p>Email: <a href="mailto:yildizbeyzax@gmail.com">yildizbeyzax@gmail.com</a><br>LinkedIn: <a href="https://www.linkedin.com/" target="_blank">Profile</a></p>` },
-      mug_1:  { title: 'Coffee', html: `<p>☕ Welcome! Enjoy a virtual coffee!</p>` },
-      mug_2:  { title: 'Coffee Facts', html: `<ul><li>Origins trace back to Ethiopia.</li><li>First coffeehouses opened in the 1500s.</li></ul>` },
-      player: { title: 'Media / Games', html: `<p>Films I love, analysis notes, and games I play.</p>` },
-      tv:     { title: 'About', html: `<p>Short bio, interests in AI/ML and data-driven products.</p>` },
-      window: { title: 'Links', html: `<p><a href="https://github.com/" target="_blank">GitHub</a> · <a href="https://www.linkedin.com/" target="_blank">LinkedIn</a> · <a href="https://medium.com/" target="_blank">Medium</a></p>` }
-    };
-
-    // ---- Click actions now open modal ----
-    const actions = Object.fromEntries(Object.keys(modalContent).map(k => [k, () => openModal(modalContent[k].title, modalContent[k].html)]));
-
-    const labelsText = {
-      speakers: 'playlist',
-      desk: 'projects',
-      sofa_1: 'hobbies',
-      sofa_2: 'hobbies',
-      globe: 'travel',
-      books: 'blog',
-      phone: 'contact',
-      mug_1: 'coffee?',
-      mug_2: 'coffee facts',
-      player: 'media/games',
-      tv: 'about',
-      window: 'links'
-    };
-
-    function normalizeName(n){ return (n||'').toLowerCase().replace(/\.[0-9]+$/,''); }
-
-    function getClickableRoot(obj){
-      let o = obj;
-      while (o){
-        const key = normalizeName(o.name);
-        if (key in actions) return o;
-        o = o.parent;
-      }
-      return null;
-    }
-
-    // Pointer interaction
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-
-    function setPointerFromEvent(e){
-      const rect = renderer.domElement.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      pointer.x = x * 2 - 1;
-      pointer.y = - (y * 2 - 1);
-    }
-
-    window.addEventListener('mousemove', (e) => {
-      if(!modelRoot) return;
-      setPointerFromEvent(e);
-      raycaster.setFromCamera(pointer, camera);
-      const hits = raycaster.intersectObjects(modelRoot.children, true);
-      const hit = hits.find(h => !!getClickableRoot(h.object));
-      document.body.style.cursor = hit ? 'pointer' : 'default';
-    });
-
-    window.addEventListener('click', (e) => {
-      if(!modelRoot) return;
-      setPointerFromEvent(e);
-      raycaster.setFromCamera(pointer, camera);
-      const hits = raycaster.intersectObjects(modelRoot.children, true);
-      const found = hits.find(h => !!getClickableRoot(h.object));
-      if (found){
-        const root = getClickableRoot(found.object);
-        const key = normalizeName(root.name);
-        const act = actions[key];
-        if (act) act();
-      }
-    });
-
-    // Add labels above clickable objects (CSS2D)
-    function addClickableLabels(){
-      if(!modelRoot) return;
-      Object.keys(labelsText).forEach(key => {
-        const target = findObjectLike(modelRoot, key);
-        if(!target) return;
-        const el = document.createElement('div');
-        el.className = 'label';
-        el.textContent = labelsText[key];
-        el.style.pointerEvents = 'auto';
-        el.addEventListener('click', (ev)=>{ ev.stopPropagation(); const act = actions[key]; if (act) act(); });
-
-        const label = new CSS2DObject(el);
-        const box = new THREE.Box3().setFromObject(target);
-        const c = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        label.position.copy(c).add(new THREE.Vector3(0, size.y * 0.6 + 0.05, 0));
-        target.add(label);
-      });
-    }
-
-    function findObjectLike(root, key){
-      const k = key.toLowerCase();
-      let found = null;
-      root.traverse(o => {
-        if(found) return;
-        const n = normalizeName(o.name);
-        if (n === k || n.startsWith(k)) found = o;
-      });
-      return found;
-    }
-
-    // Auto-frame camera to fit an object
-    function frameObject(object3D){
-      const box = new THREE.Box3().setFromObject(object3D);
-      const sizeV = box.getSize(new THREE.Vector3());
-      const size = sizeV.length();
-      const center = box.getCenter(new THREE.Vector3());
-
-      controls.target.copy(center);
-      const fitDistance = size * 0.8 / Math.tan((Math.PI * camera.fov) / 360);
-      const dir = new THREE.Vector3(1, 0.6, 1).normalize();
-      camera.position.copy(center).add(dir.multiplyScalar(fitDistance));
-      camera.near = Math.max(0.01, size / 100);
-      camera.far = Math.max(100, size * 10);
-      camera.updateProjectionMatrix();
-      controls.update();
-    }
-
-    function setLoadingText(t){ const el=document.getElementById('loading'); if(el) el.textContent=t; }
-    function hideLoading(){ const el=document.getElementById('loading'); if(el) el.style.display='none'; }
-    function showLoading(){ const el=document.getElementById('loading'); if(el) el.style.display='flex'; }
-
-    function addFallbackCube(){
-      // add simple ground + cube so user sees something even if GLB is missing
-      const gnd = new THREE.Mesh(new THREE.PlaneGeometry(6,6), new THREE.MeshStandardMaterial({ roughness:0.95, metalness:0.05, color:0x0b1220 }));
-      gnd.rotation.x = -Math.PI/2; scene.add(gnd);
-      const cube = new THREE.Mesh(new THREE.BoxGeometry(0.6,0.6,0.6), new THREE.MeshStandardMaterial({ roughness:0.8, metalness:0.2 }));
-      cube.position.set(0,0.3,0); scene.add(cube);
-      frameObject(cube);
-    }
-
-    // Render loop
-    function onResize(){
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      labelRenderer.setSize(window.innerWidth, window.innerHeight);
-    }
-    window.addEventListener('resize', onResize);
-
-    const clock = new THREE.Clock();
-    (function animate(){
-      requestAnimationFrame(animate);
-      const dt = clock.getDelta();
-      controls.update(dt);
-      renderer.render(scene, camera);
-      labelRenderer.render(scene, camera);
-    })();
+    // Smooth scroll (native is enough on modern browsers)
+    document.documentElement.style.scrollBehavior = 'smooth';
   </script>
 </body>
 </html>
