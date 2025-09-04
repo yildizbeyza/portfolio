@@ -54,6 +54,7 @@
     import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
     import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+    import { DRACOLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/DRACOLoader.js';
     import { CSS2DRenderer, CSS2DObject } from 'https://unpkg.com/three@0.160.0/examples/jsm/renderers/CSS2DRenderer.js';
 
     // ---- Basic scene setup ----
@@ -87,11 +88,15 @@
     controls.enableDamping = true;
     controls.target.set(0, 0.9, 0);
 
-    // Loader
+    // Loader (GLTF + optional Draco)
     let modelRoot = null;
     const loader = new GLTFLoader();
-    // Put your exported GLB at assets/room.glb
-    loader.load('assets/room.glb', (gltf) => {
+    const dracoLoader = new DRACOLoader();
+    // Use CDN decoder path for Draco-compressed GLBs
+    dracoLoader.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
+    loader.setDRACOLoader(dracoLoader);
+
+    loader.load('./assets/room.glb?v=1', (gltf) => {
       modelRoot = gltf.scene;
       scene.add(modelRoot);
 
@@ -100,8 +105,11 @@
       modelRoot.traverse(o => { if (o.isObject3D) names.push(o.name); });
       console.log('[Names in model]', names);
 
+      // Auto-frame camera to the loaded model
+      frameObject(modelRoot);
+
       addClickableLabels();
-    }, (p)=>{ /* progress */ }, (err)=>{
+    }, undefined, (err) => {
       console.error('Failed to load GLB:', err);
     });
 
@@ -221,6 +229,23 @@
       const el = document.querySelector(id);
       if(!el) return;
       el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    // Auto-frame camera to fit an object
+    function frameObject(object3D){
+      const box = new THREE.Box3().setFromObject(object3D);
+      const sizeV = box.getSize(new THREE.Vector3());
+      const size = sizeV.length();
+      const center = box.getCenter(new THREE.Vector3());
+
+      controls.target.copy(center);
+      const fitDistance = size * 0.8 / Math.tan((Math.PI * camera.fov) / 360);
+      const dir = new THREE.Vector3(1, 0.6, 1).normalize();
+      camera.position.copy(center).add(dir.multiplyScalar(fitDistance));
+      camera.near = Math.max(0.01, size / 100);
+      camera.far = Math.max(100, size * 10);
+      camera.updateProjectionMatrix();
+      controls.update();
     }
 
     // Render loop
