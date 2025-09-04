@@ -126,16 +126,45 @@
     dracoLoader.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
     loader.setDRACOLoader(dracoLoader);
 
+    const startTs = performance.now();
     const failbackTimer = setTimeout(()=>{
       if(!loaded){
+        console.warn('[Loader] Fallback timer fired — GLB taking too long.');
         addFallbackCube();
+        setLoadingText('Taking long to load GLB. Showing fallback scene.');
+        hideLoading();
+      }
+    }, 6000);
         setLoadingText('Loaded fallback cube (GLB not found yet)…');
       }
     }, 4500);
 
-    loader.load('./assets/room.glb?v=3', (gltf) => {
+    loader.load('./assets/room.glb?v=4', (gltf) => {
       loaded = true;
       clearTimeout(failbackTimer);
+      modelRoot = gltf.scene;
+      scene.add(modelRoot);
+
+      const names = [];
+      modelRoot.traverse(o => { if (o.isObject3D) names.push(o.name); });
+      console.log('[Names in model]', names);
+
+      frameObject(modelRoot);
+      addClickableLabels();
+      hideLoading();
+    }, (evt)=>{
+      try{
+        if(evt && evt.total){
+          const pct = Math.round((evt.loaded/evt.total)*100);
+          setLoadingText(`Loading 3D scene… ${pct}%`);
+        }
+      }catch{ /* ignore */ }
+    }, (err) => {
+      console.error('Failed to load GLB:', err);
+      setLoadingText('Failed to load GLB. Showing fallback scene.');
+      addFallbackCube();
+      hideLoading();
+    });
       modelRoot = gltf.scene;
       scene.add(modelRoot);
 
