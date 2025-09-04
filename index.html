@@ -1,39 +1,245 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Beyza — Coming Soon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beyza • 3D Portfolio Room</title>
   <style>
-    :root { color-scheme: dark; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: #000; /* pure black */
-      color: #fff;      /* white text */
-      display: grid;
-      place-items: center;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-    }
-    main { text-align: center; }
-    h1 {
-      margin: 0 0 .6rem;
-      font-weight: 800;
-      font-size: clamp(28px, 6vw, 56px);
-      letter-spacing: .2px;
-    }
-    p {
-      margin: 0;
-      opacity: .75;
-      font-size: clamp(12px, 2.4vw, 16px);
-    }
+    :root{ --bg:#0f1116; --fg:#eaeef2; --muted:#9aa4b2; --accent:#7ee787; }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; background:var(--bg); color:var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji"; }
+    #scene{ position:fixed; inset:0; overflow:hidden; }
+    #labels{ position:fixed; inset:0; pointer-events:none; } /* CSS2DRenderer mounts here */
+    #hud{ position:fixed; left:16px; top:16px; z-index:20; display:flex; gap:8px; align-items:center; }
+    .pill{ background:#1b2130aa; border:1px solid #2a3142; padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted); }
+    .pill kbd{ background:#0e1422; border:1px solid #222a3b; padding:2px 6px; border-radius:6px; font-size:11px; }
+
+    /* Labels that float above 3D objects */
+    .label{ pointer-events:auto; user-select:none; font-weight:600; font-size:12px; color:#0b1020; background:#79c0ff; border:2px solid #1f6feb; padding:6px 10px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.35); transition:transform .12s ease; }
+    .label:hover{ transform:scale(1.04); }
+
+    /* Scrollable page content below the 3D scene */
+    main{ position:relative; z-index:10; margin-top:100vh; }
+    section{ padding:64px 20px; max-width:920px; margin:0 auto; border-bottom:1px solid #202636; }
+    section h2{ margin:0 0 8px; }
+    section p{ color:var(--muted); line-height:1.7; }
+    .links a{ color:var(--accent); text-decoration:none; border-bottom:1px dashed #2f6; }
   </style>
 </head>
 <body>
+  <div id="scene"></div>
+  <div id="labels"></div>
+
+  <div id="hud">
+    <span class="pill">Controls: <kbd>drag</kbd> orbit • <kbd>wheel</kbd> zoom • <kbd>right-drag</kbd> pan</span>
+  </div>
+
   <main>
-    <h1>hi, i am beyza!</h1>
-    <p>coming soon...</p>
+    <section id="about"><h2>About</h2><p>Hello! This is a 3D room scene exported from Blender (or a premade model). Click objects in the room to open related sections or external links.</p></section>
+    <section id="projects"><h2>Projects</h2><p>Projects, experience, and portfolio items… (replace with your content)</p></section>
+    <section id="hobbies"><h2>Hobbies & Fun</h2><p>Games, hobbies, fun stuff…</p></section>
+    <section id="travel"><h2>Travel</h2><p>Trips, San Francisco Bay Area photos, and small stories…</p></section>
+    <section id="blog"><h2>Blog</h2><p>Medium posts or personal notes…</p></section>
+    <section id="media"><h2>Media / Games</h2><p>Favorite films, games, or analysis…</p></section>
+    <section id="contact"><h2>Contact</h2><p>Email, LinkedIn, etc.</p></section>
+    <section id="links" class="links"><h2>Links</h2><p>
+      <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a> ·
+      <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a> ·
+      <a href="https://medium.com/" target="_blank" rel="noreferrer">Medium</a>
+    </p></section>
   </main>
+
+  <!-- Three.js (module) -->
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+    import { CSS2DRenderer, CSS2DObject } from 'https://unpkg.com/three@0.160.0/examples/jsm/renderers/CSS2DRenderer.js';
+
+    // ---- Basic scene setup ----
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f1116);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(3.2, 2.1, 3.4);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    document.getElementById('scene').appendChild(renderer.domElement);
+
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0';
+    labelRenderer.domElement.style.pointerEvents = 'none';
+    document.getElementById('labels').appendChild(labelRenderer.domElement);
+
+    // Lights
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x223344, 0.8));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
+    dirLight.position.set(3, 5, 2);
+    scene.add(dirLight);
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.target.set(0, 0.9, 0);
+
+    // Loader
+    let modelRoot = null;
+    const loader = new GLTFLoader();
+    // Put your exported GLB at assets/room.glb
+    loader.load('assets/room.glb', (gltf) => {
+      modelRoot = gltf.scene;
+      scene.add(modelRoot);
+
+      // Log object names for debugging
+      const names = [];
+      modelRoot.traverse(o => { if (o.isObject3D) names.push(o.name); });
+      console.log('[Names in model]', names);
+
+      addClickableLabels();
+    }, (p)=>{ /* progress */ }, (err)=>{
+      console.error('Failed to load GLB:', err);
+    });
+
+    // ---- Click actions ----
+    const actions = {
+      // Adjust all links/targets to your needs
+      speakers: () => window.open('https://open.spotify.com/', '_blank'),
+      desk: () => scrollToSection('#projects'),
+      sofa_1: () => scrollToSection('#hobbies'),
+      sofa_2: () => scrollToSection('#hobbies'),
+      globe: () => scrollToSection('#travel'),
+      books: () => scrollToSection('#blog'),
+      phone: () => scrollToSection('#contact'),
+      mug_1: () => alert('☕ Welcome! Enjoy a cup of coffee.'),
+      mug_2: () => alert('☕ Coffee fact: The earliest stories place coffee’s origin in Ethiopia.'),
+      player: () => scrollToSection('#media'),
+      tv: () => scrollToSection('#about'),
+      window: () => scrollToSection('#links')
+    };
+
+    const labelsText = {
+      speakers: 'playlist',
+      desk: 'projects',
+      sofa_1: 'hobbies',
+      sofa_2: 'hobbies',
+      globe: 'travel',
+      books: 'blog',
+      phone: 'contact',
+      mug_1: 'coffee?',
+      mug_2: 'coffee facts',
+      player: 'media/games',
+      tv: 'about',
+      window: 'links'
+    };
+
+    function normalizeName(n){ return (n||'').toLowerCase().replace(/\.[0-9]+$/,''); }
+
+    function getClickableRoot(obj){
+      let o = obj;
+      while (o){
+        const key = normalizeName(o.name);
+        if (key in actions) return o;
+        o = o.parent;
+      }
+      return null;
+    }
+
+    // Pointer interaction
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    function setPointerFromEvent(e){
+      const rect = renderer.domElement.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      pointer.x = x * 2 - 1;
+      pointer.y = - (y * 2 - 1);
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      if(!modelRoot) return;
+      setPointerFromEvent(e);
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(modelRoot.children, true);
+      const hit = hits.find(h => !!getClickableRoot(h.object));
+      document.body.style.cursor = hit ? 'pointer' : 'default';
+    });
+
+    window.addEventListener('click', (e) => {
+      if(!modelRoot) return;
+      setPointerFromEvent(e);
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(modelRoot.children, true);
+      const found = hits.find(h => !!getClickableRoot(h.object));
+      if (found){
+        const root = getClickableRoot(found.object);
+        const key = normalizeName(root.name);
+        const act = actions[key];
+        if (act) act();
+      }
+    });
+
+    // Add labels above clickable objects (CSS2D)
+    function addClickableLabels(){
+      if(!modelRoot) return;
+      Object.keys(labelsText).forEach(key => {
+        const target = findObjectLike(modelRoot, key);
+        if(!target) return;
+        const el = document.createElement('div');
+        el.className = 'label';
+        el.textContent = labelsText[key];
+        el.style.pointerEvents = 'auto';
+        el.addEventListener('click', (ev)=>{ ev.stopPropagation(); const act = actions[key]; if (act) act(); });
+
+        const label = new CSS2DObject(el);
+        // Place slightly above the object
+        const box = new THREE.Box3().setFromObject(target);
+        const c = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        label.position.copy(c).add(new THREE.Vector3(0, size.y * 0.6 + 0.05, 0));
+        target.add(label);
+      });
+    }
+
+    function findObjectLike(root, key){
+      const k = key.toLowerCase();
+      let found = null;
+      root.traverse(o => {
+        if(found) return;
+        const n = normalizeName(o.name);
+        if (n === k || n.startsWith(k)) found = o;
+      });
+      return found;
+    }
+
+    function scrollToSection(id){
+      const el = document.querySelector(id);
+      if(!el) return;
+      el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    // Render loop
+    function onResize(){
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onResize);
+
+    const clock = new THREE.Clock();
+    (function animate(){
+      requestAnimationFrame(animate);
+      const dt = clock.getDelta();
+      controls.update(dt);
+      renderer.render(scene, camera);
+      labelRenderer.render(scene, camera);
+    })();
+  </script>
 </body>
 </html>
