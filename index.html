@@ -5,20 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Beyza • 3D Portfolio Room</title>
   <style>
-    :root{ --bg:#0f1116; --fg:#eaeef2; --muted:#9aa4b2; --accent:#7ee787; }
+    :root{ --bg:#0f1116; --fg:#eaeef2; --muted:#9aa4b2; --accent:#7ee787; --panel:#0b1220; }
     *{ box-sizing:border-box; }
     html,body{ height:100%; margin:0; background:var(--bg); color:var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji"; }
     #scene{ position:fixed; inset:0; overflow:hidden; }
-    #labels{ position:fixed; inset:0; pointer-events:none; } /* CSS2DRenderer mounts here */
+    #labels{ position:fixed; inset:0; pointer-events:none; }
     #hud{ position:fixed; left:16px; top:16px; z-index:20; display:flex; gap:8px; align-items:center; }
     .pill{ background:#1b2130aa; border:1px solid #2a3142; padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted); }
     .pill kbd{ background:#0e1422; border:1px solid #222a3b; padding:2px 6px; border-radius:6px; font-size:11px; }
 
-    /* Labels that float above 3D objects */
+    /* Floating labels above 3D objects */
     .label{ pointer-events:auto; user-select:none; font-weight:600; font-size:12px; color:#0b1020; background:#79c0ff; border:2px solid #1f6feb; padding:6px 10px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.35); transition:transform .12s ease; }
     .label:hover{ transform:scale(1.04); }
 
-    /* Scrollable page content below the 3D scene */
+    /* Modal */
+    .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter: blur(2px); display:none; align-items:center; justify-content:center; z-index:30; }
+    .modal-backdrop.show{ display:flex; }
+    .modal{ width:min(920px, 92vw); max-height:85vh; background:var(--panel); border:1px solid #223049; border-radius:16px; box-shadow:0 24px 60px rgba(0,0,0,.55); overflow:hidden; display:flex; flex-direction:column; }
+    .modal header{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #1c2435; }
+    .modal header h3{ margin:0; font-size:16px; }
+    .modal header button{ background:#111827; color:#cbd5e1; border:1px solid #263246; border-radius:10px; padding:6px 10px; cursor:pointer; }
+    .modal header button:hover{ filter:brightness(1.1); }
+    .modal .body{ padding:18px; overflow:auto; color:#cbd5e1; line-height:1.7; }
+    .modal .body h4{ margin:16px 0 6px; }
+    .modal .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:12px; }
+    .card{ border:1px solid #24324a; border-radius:12px; padding:12px; background:#0f172a; }
+    .card a{ color:var(--accent); text-decoration:none; }
+
+    /* Page sections (kept for SEO/fallback) */
     main{ position:relative; z-index:10; margin-top:100vh; }
     section{ padding:64px 20px; max-width:920px; margin:0 auto; border-bottom:1px solid #202636; }
     section h2{ margin:0 0 8px; }
@@ -34,8 +48,19 @@
     <span class="pill">Controls: <kbd>drag</kbd> orbit • <kbd>wheel</kbd> zoom • <kbd>right-drag</kbd> pan</span>
   </div>
 
+  <!-- Simple modal -->
+  <div id="backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <header>
+        <h3 id="modal-title">Panel</h3>
+        <button id="modal-close" aria-label="Close">Close (Esc)</button>
+      </header>
+      <div id="modal-body" class="body">Loading…</div>
+    </div>
+  </div>
+
   <main>
-    <section id="about"><h2>About</h2><p>Hello! This is a 3D room scene exported from Blender (or a premade model). Click objects in the room to open related sections or external links.</p></section>
+    <section id="about"><h2>About</h2><p>Hello! This is a 3D room scene exported from Blender (or a premade model). Click objects in the room to open lightweight panels with content.</p></section>
     <section id="projects"><h2>Projects</h2><p>Projects, experience, and portfolio items… (replace with your content)</p></section>
     <section id="hobbies"><h2>Hobbies & Fun</h2><p>Games, hobbies, fun stuff…</p></section>
     <section id="travel"><h2>Travel</h2><p>Trips, San Francisco Bay Area photos, and small stories…</p></section>
@@ -92,11 +117,10 @@
     let modelRoot = null;
     const loader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
-    // Use CDN decoder path for Draco-compressed GLBs
     dracoLoader.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
     loader.setDRACOLoader(dracoLoader);
 
-    loader.load('./assets/room.glb?v=1', (gltf) => {
+    loader.load('./assets/room.glb?v=2', (gltf) => {
       modelRoot = gltf.scene;
       scene.add(modelRoot);
 
@@ -113,22 +137,66 @@
       console.error('Failed to load GLB:', err);
     });
 
-    // ---- Click actions ----
-    const actions = {
-      // Adjust all links/targets to your needs
-      speakers: () => window.open('https://open.spotify.com/', '_blank'),
-      desk: () => scrollToSection('#projects'),
-      sofa_1: () => scrollToSection('#hobbies'),
-      sofa_2: () => scrollToSection('#hobbies'),
-      globe: () => scrollToSection('#travel'),
-      books: () => scrollToSection('#blog'),
-      phone: () => scrollToSection('#contact'),
-      mug_1: () => alert('☕ Welcome! Enjoy a cup of coffee.'),
-      mug_2: () => alert('☕ Coffee fact: The earliest stories place coffee’s origin in Ethiopia.'),
-      player: () => scrollToSection('#media'),
-      tv: () => scrollToSection('#about'),
-      window: () => scrollToSection('#links')
+    // ---- Simple modal system ----
+    const backdrop = document.getElementById('backdrop');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody  = document.getElementById('modal-body');
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    function openModal(title, html){
+      modalTitle.textContent = title;
+      modalBody.innerHTML = html;
+      backdrop.classList.add('show');
+      backdrop.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){
+      backdrop.classList.remove('show');
+      backdrop.setAttribute('aria-hidden','true');
+    }
+
+    // Content for each object (edit freely)
+    const modalContent = {
+      speakers: {
+        title: 'Playlist',
+        html: `
+          <p>My current focus playlist. Opens in a new tab.</p>
+          <div class="grid">
+            <div class="card"><a href="https://open.spotify.com/" target="_blank" rel="noreferrer">Open Spotify</a></div>
+          </div>
+        `
+      },
+      desk: {
+        title: 'Projects & Portfolio',
+        html: `
+          <div class="grid">
+            <div class="card">
+              <h4>LLM Benchmarking (TR Coreference)</h4>
+              <p>Evaluation pipeline, datasets, and metrics (MUC, B³, CEAF).</p>
+              <a href="#">View details</a>
+            </div>
+            <div class="card">
+              <h4>Churn Prediction & Recsys</h4>
+              <p>Video streaming analytics, segmentation, and a chatbot.</p>
+              <a href="#">View details</a>
+            </div>
+          </div>
+        `
+      },
+      sofa_1: { title: 'Hobbies & Fun', html: `<p>Games I play, DIY, 3D printing, and small experiments.</p>` },
+      sofa_2: { title: 'Hobbies & Fun', html: `<p>A second cozy corner with similar vibes.</p>` },
+      globe:  { title: 'Travel', html: `<p>Mini stories and photos from trips (SF Bay Area etc.).</p>` },
+      books:  { title: 'Blog',   html: `<p>Selected posts and notes. <a href="https://medium.com/" target="_blank">Medium</a></p>` },
+      phone:  { title: 'Contact',html: `<p>Email: <a href="mailto:yildizbeyzax@gmail.com">yildizbeyzax@gmail.com</a><br>LinkedIn: <a href="https://www.linkedin.com/" target="_blank">Profile</a></p>` },
+      mug_1:  { title: 'Coffee', html: `<p>☕ Welcome! Enjoy a virtual coffee!</p>` },
+      mug_2:  { title: 'Coffee Facts', html: `<ul><li>Origins trace back to Ethiopia.</li><li>First coffeehouses opened in the 1500s.</li></ul>` },
+      player: { title: 'Media / Games', html: `<p>Films I love, analysis notes, and games I play.</p>` },
+      tv:     { title: 'About', html: `<p>Short bio, interests in AI/ML and data-driven products.</p>` },
+      window: { title: 'Links', html: `<p><a href="https://github.com/" target="_blank">GitHub</a> · <a href="https://www.linkedin.com/" target="_blank">LinkedIn</a> · <a href="https://medium.com/" target="_blank">Medium</a></p>` }
     };
+
+    // ---- Click actions now open modal ----
+    const actions = Object.fromEntries(Object.keys(modalContent).map(k => [k, () => openModal(modalContent[k].title, modalContent[k].html)]));
 
     const labelsText = {
       speakers: 'playlist',
@@ -205,7 +273,6 @@
         el.addEventListener('click', (ev)=>{ ev.stopPropagation(); const act = actions[key]; if (act) act(); });
 
         const label = new CSS2DObject(el);
-        // Place slightly above the object
         const box = new THREE.Box3().setFromObject(target);
         const c = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
@@ -223,12 +290,6 @@
         if (n === k || n.startsWith(k)) found = o;
       });
       return found;
-    }
-
-    function scrollToSection(id){
-      const el = document.querySelector(id);
-      if(!el) return;
-      el.scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
     // Auto-frame camera to fit an object
