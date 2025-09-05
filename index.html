@@ -4,295 +4,98 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Beyza | Portfolio</title>
-  <meta name="description" content="Beyza Yıldız – AI/ML & data‑driven engineer. Projects, experience, writing, and fun stuff." />
+  <meta name="description" content="Beyza Yıldız – Computer engineer." />
   <meta name="color-scheme" content="light dark" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg: #0b0c10;
-      --panel: #111217;
-      --panel-2: #171923;
-      --text: #e8eaf0;
-      --muted: #a6adbb;
-      --brand: #7c5cff;
-      --brand-2:#4cc9f0;
-      --ring: rgba(124,92,255,.35);
-      --ok:#00c853; --warn:#ffb300;
-      --shadow: 0 6px 24px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+      --bg:#0b0c10; --panel:#111217; --panel-2:#171923;
+      --text:#e8eaf0; --muted:#a6adbb;
+      --brand:#7c5cff; --brand-2:#4cc9f0; --ring:rgba(124,92,255,.35);
+      --shadow:0 6px 24px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.2);
     }
     :root.light{
-      --bg: #fbfbfe;
-      --panel: #ffffff;
-      --panel-2: #f5f6fb;
-      --text: #0b1020;
-      --muted: #4d5566;
-      --brand: #6b4cff;
-      --brand-2:#0ea5e9;
-      --ring: rgba(107,76,255,.25);
-      --shadow: 0 8px 24px rgba(14, 20, 40, .08), 0 2px 8px rgba(14, 20, 40, .05);
+      --bg:#fbfbfe; --panel:#fff; --panel-2:#f5f6fb;
+      --text:#0b1020; --muted:#4d5566; --brand:#6b4cff; --brand-2:#0ea5e9; --ring:rgba(107,76,255,.25);
+      --shadow:0 8px 24px rgba(14,20,40,.08),0 2px 8px rgba(14,20,40,.05);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family: Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji"; 
-      background: radial-gradient(1200px 800px at 15% -10%, rgba(124,92,255,.12), transparent 60%),
-                  radial-gradient(1200px 800px at 85% 0%, rgba(76,201,240,.10), transparent 60%),
-                  var(--bg);
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 800px at 15% -10%, rgba(124,92,255,.12), transparent 60%),
+        radial-gradient(1200px 800px at 85% 0%, rgba(76,201,240,.10), transparent 60%),
+        var(--bg);
       color:var(--text); line-height:1.55; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
     a{color:inherit; text-decoration:none}
     .container{max-width:1120px; margin-inline:auto; padding:24px;}
-
-    /* Topbar */
-    header{position:sticky; top:0; z-index:999; backdrop-filter:saturate(180%) blur(8px); background:color-mix(in srgb, var(--bg), transparent 8%);}    
-    .topbar{display:flex; align-items:center; gap:16px; padding:12px 24px; border-bottom:1px solid color-mix(in srgb, var(--muted), transparent 75%);}    
-    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px}
-    nav{margin-left:auto; display:flex; gap:16px; flex-wrap:wrap}
-    nav a{padding:8px 12px; border-radius:10px; color:var(--muted)}
-    nav a.active, nav a:hover{color:var(--text); background:color-mix(in srgb, var(--brand) 12%, transparent)}
     .btn{display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%); background:linear-gradient(180deg, var(--panel), var(--panel-2)); box-shadow:var(--shadow);}
     .btn:hover{transform:translateY(-1px); transition:.2s ease;}
     .ghost{background:transparent; box-shadow:none}
+    .theme-fab{position:fixed; top:14px; right:14px; z-index:1000}
 
-    /* Hero */
-    .hero{display:grid; grid-template-columns:1.2fr .8fr; gap:28px; padding:28px 0 8px}
-    .badge{display:inline-flex; align-items:center; gap:8px; font-size:.9rem; color:var(--muted); padding:6px 10px; border:1px dashed color-mix(in srgb, var(--muted), transparent 65%); border-radius:999px}
-    h1{font-size:clamp(28px, 3.2vw, 48px); line-height:1.1; margin:14px 0 10px}
-    .lead{font-size:clamp(16px, 1.5vw, 18px); color:var(--muted)}
+    /* HERO artık tek sütun */
+    .hero{display:grid; grid-template-columns:1fr; gap:28px; padding:28px 0 8px}
+    h1{font-size:clamp(28px,3.2vw,48px); line-height:1.1; margin:14px 0 10px}
+    .lead{font-size:clamp(16px,1.5vw,18px); color:var(--muted)}
     .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
     .card{background:linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid color-mix(in srgb, var(--muted), transparent 70%); border-radius:18px; padding:18px; box-shadow:var(--shadow)}
 
-    /* Sections */
     section{scroll-margin-top:90px; margin:28px 0}
     .section-title{display:flex; align-items:center; justify-content:space-between; margin:6px 0 16px}
     .section-title h2{font-size:22px; margin:0}
     .section-title p{margin:0; color:var(--muted); font-size:.95rem}
     .grid{display:grid; gap:14px}
     .grid.cols-2{grid-template-columns:repeat(2, minmax(0,1fr))}
-    .grid.cols-3{grid-template-columns:repeat(3, minmax(0,1fr))}
-    .grid.cols-4{grid-template-columns:repeat(4, minmax(0,1fr))}
-    @media (max-width: 960px){ .hero{grid-template-columns:1fr} .grid.cols-3{grid-template-columns:repeat(2,1fr)} .grid.cols-4{grid-template-columns:repeat(2,1fr)} }
-    @media (max-width: 640px){ .grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr} }
+    @media (max-width:960px){ .grid.cols-2{grid-template-columns:1fr} }
 
     .pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:color-mix(in srgb, var(--brand) 12%, transparent)}
     .meta{color:var(--muted); font-size:.9rem}
-    .card h3{margin:6px 0 4px; font-size:18px}
-    .list{display:flex; flex-direction:column; gap:10px}
-    .list li{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid color-mix(in srgb, var(--muted), transparent 70%)}
-    .list small{color:var(--muted)}
-
-    .gallery{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px}
-    .gallery img{width:100%; height:180px; object-fit:cover; border-radius:14px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%)}
-    @media (max-width: 720px){ .gallery{grid-template-columns:1fr 1fr} }
-
     footer{margin:40px 0 20px; color:var(--muted); font-size:.9rem}
     .split{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
     .right{margin-left:auto}
     .kbd{font:600 12px/1 Inter; border:1px solid color-mix(in srgb, var(--muted), transparent 60%); padding:6px 8px; border-radius:8px}
 
-    /* Corner links */
     .corner{position:fixed; right:18px; top:120px; display:flex; flex-direction:column; gap:10px; z-index:998}
-    @media (max-width: 960px){ .corner{display:none} }
+    @media (max-width:960px){ .corner{display:none} }
     .corner .cbtn{display:inline-flex; align-items:center; justify-content:center; padding:8px 10px; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 65%); background:linear-gradient(180deg, var(--panel), var(--panel-2)); box-shadow:var(--shadow); font-weight:600; font-size:.9rem;}
-    .corner .cbtn:hover{transform:translateY(-1px);} 
+    .corner .cbtn:hover{transform:translateY(-1px);}
   </style>
 </head>
 <body>
-  <header>
-    <div class="topbar container">
-      <div class="brand">hi, i am beyza!</div>
-      <nav aria-label="Primary">
-        <a href="#projects">Projects</a>
-        <a href="#experience">Experience</a>
-        <a href="#portfolio">Portfolio</a>
-        <a href="#fun">Fun</a>
-        <a href="#travel">Travel</a>
-        <a href="#currently">Currently</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <button id="themeBtn" class="btn ghost" aria-label="Toggle theme">🌓</button>
-    </div>
-  </header>
+  <button id="themeBtn" class="btn ghost theme-fab" aria-label="Toggle theme">🌓</button>
 
   <main class="container">
-    <!-- HERO -->
     <section class="hero">
       <div class="card">
-        <span class="badge">AI/ML & data‑driven engineer • Istanbul</span>
-        <h1>Hi, I’m Beyza — I build practical, human‑centered experiences with code & data.</h1>
-        <p class="lead">Simple, fast, and delightful. This site is a clean starting point we can grow together — projects, experiments, travels, and the fun bits.
+        <h1>hi, i am beyza!</h1>
+        <p class="lead">
+          I’m a Computer Engineer who loves learning, experimenting, and turning ideas into meaningful projects. I enjoy solving complex problems with a mix of creativity and logic, connecting ideas across disciplines, and building things that spark curiosity. For me, engineering is more than just coding—it’s about creating thoughtful, human-centered solutions and making technology feel alive.
         </p>
         <div class="cta-row">
-          <a class="btn" id="spotifyBtn" href="#" target="_blank" rel="noopener">▶︎ Open my Spotify</a>
-          <a class="btn ghost" href="#contact">Get in touch</a>
-          <a class="btn ghost" href="#links">Links</a>
+          <a class="btn" href="Beyza_CV.pdf" download>⬇ Download CV</a>
         </div>
       </div>
-      <div class="card">
-        <div class="section-title"><h2>Quick Links</h2><p class="meta">Edit later with your real URLs</p></div>
-        <div class="grid cols-2" id="quickLinks"></div>
-        <p class="meta" style="margin-top:10px">You’ll be able to swap these in <span class="kbd">/script config</span> below.</p>
-      </div>
     </section>
 
-    <!-- PROJECTS -->
-    <section id="projects">
-      <div class="section-title">
-        <h2>Projects</h2>
-        <p class="meta">A few highlights — more to come.</p>
-      </div>
-      <div class="grid cols-3">
-        <article class="card">
-          <span class="meta">Python • NLP</span>
-          <h3>Turkish Coreference Benchmark</h3>
-          <p>Evaluating transformer models on Turkish coreference with custom metrics & robust prompts.</p>
-          <a class="pill" href="#">View repo →</a>
-        </article>
-        <article class="card">
-          <span class="meta">Python • Recsys</span>
-          <h3>Streaming Recommendation Engine</h3>
-          <p>Hybrid collaborative + content‑based engine; offline metrics and online A/B‑ready interface.</p>
-          <a class="pill" href="#">Case study →</a>
-        </article>
-        <article class="card">
-          <span class="meta">Web • Three.js</span>
-          <h3>Interactive 3D Room (WIP)</h3>
-          <p>A playful 3D space for portfolio links. Paused for now in favor of a minimal site (this one!).</p>
-          <a class="pill" href="#">Notes →</a>
-        </article>
-      </div>
-    </section>
-
-    <!-- EXPERIENCE -->
-    <section id="experience">
-      <div class="section-title">
-        <h2>Experience</h2>
-        <p class="meta">Latest roles & contributions</p>
-      </div>
-      <ul class="list">
-        <li>
-          <div>
-            <strong>AI/ML Engineering Intern</strong> · ICRYPEX
-            <div class="meta">Built an NFT recommendation prototype (Python, embeddings, Pinecone).</div>
-          </div>
-          <small class="meta">2024</small>
-        </li>
-        <li>
-          <div>
-            <strong>AI/ML Intern</strong> · Presidency of the Republic of Türkiye, DTO
-            <div class="meta">Face recognition & STT on ROS (C++/OpenCV/FaceNet).</div>
-          </div>
-          <small class="meta">2023</small>
-        </li>
-        <li>
-          <div>
-            <strong>Back‑End Intern</strong> · DogGO
-            <div class="meta">Scala + Cassandra services; improved API latency.</div>
-          </div>
-          <small class="meta">2021</small>
-        </li>
-      </ul>
-    </section>
-
-    <!-- PORTFOLIO (selected) -->
-    <section id="portfolio">
-      <div class="section-title">
-        <h2>Portfolio</h2>
-        <p class="meta">Design/dev snapshots</p>
-      </div>
-      <div class="grid cols-3">
-        <a class="card" href="#"><img alt="preview" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" style="width:100%; height:160px; object-fit:cover; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%);"/><h3>LLM Eval Dashboard</h3><p class="meta">A compact UI for prompt tests</p></a>
-        <a class="card" href="#"><img alt="preview" src="https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1200&auto=format&fit=crop" style="width:100%; height:160px; object-fit:cover; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%);"/><h3>Data Story Mini‑site</h3><p class="meta">Narrative + charts</p></a>
-        <a class="card" href="#"><img alt="preview" src="https://images.unsplash.com/photo-1542385151-efd9000785a0?q=80&w=1200&auto=format&fit=crop" style="width:100%; height:160px; object-fit:cover; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 70%);"/><h3>Playful Micro‑interactions</h3><p class="meta">CSS + JS only</p></a>
-      </div>
-    </section>
-
-    <!-- FUN / HOBBIES -->
-    <section id="fun">
-      <div class="section-title">
-        <h2>Hobbies & Fun Stuff</h2>
-        <p class="meta">Maker bits, games, and tiny experiments</p>
-      </div>
-      <div class="grid cols-3">
-        <article class="card"><h3>3D Printing</h3><p>Prusa vibes, custom frames, fish‑themed prints 🎣</p><span class="meta">Tools: OrcaSlicer, Fusion 360</span></article>
-        <article class="card"><h3>DIY Gifts</h3><p>Keyboard shadow‑boxes, laser‑cut frames, resin art.</p><span class="meta">Because love ≠ AliExpress.</span></article>
-        <article class="card"><h3>Gaming</h3><p>Casual cozy, puzzle, and a dash of roguelike.</p><span class="meta">Now playing: <span id="nowPlaying">—</span></span></article>
-      </div>
-    </section>
-
-    <!-- TRAVEL -->
-    <section id="travel">
-      <div class="section-title">
-        <h2>Travel</h2>
-        <p class="meta">A couple of lighthearted moments</p>
-      </div>
-      <div class="gallery card" aria-label="Travel gallery">
-        <img alt="SF Bay wink" src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?q=80&w=1200&auto=format&fit=crop" />
-        <img alt="Golden Gate" src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?q=80&w=1200&auto=format&fit=crop" />
-        <img alt="Cable car moment" src="https://images.unsplash.com/photo-1518562923427-19e694fbd8e6?q=80&w=1200&auto=format&fit=crop" />
-      </div>
-      <p class="meta" style="margin-top:8px">Caption idea: “I asked for ‘Bay area fog’ and the weather API said ‘say no more.’”</p>
-    </section>
-
-    <!-- CURRENTLY -->
-    <section id="currently">
-      <div class="section-title">
-        <h2>Currently Reading / Watching / Playing</h2>
-        <p class="meta">Auto‑filled via simple config below</p>
-      </div>
-      <div class="grid cols-3">
-        <article class="card">
-          <span class="meta">Book</span>
-          <h3 id="bookTitle">—</h3>
-          <p id="bookNote" class="meta">—</p>
-          <a class="pill" id="bookUrl" href="#" target="_blank" rel="noopener">Open →</a>
-        </article>
-        <article class="card">
-          <span class="meta">Film</span>
-          <h3 id="filmTitle">—</h3>
-          <p id="filmNote" class="meta">—</p>
-          <a class="pill" id="filmUrl" href="#" target="_blank" rel="noopener">Open →</a>
-        </article>
-        <article class="card">
-          <span class="meta">Blog</span>
-          <h3 id="blogTitle">—</h3>
-          <p id="blogNote" class="meta">—</p>
-          <a class="pill" id="blogUrl" href="#" target="_blank" rel="noopener">Open →</a>
-        </article>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about">
-      <div class="section-title">
-        <h2>About</h2>
-        <p class="meta">Short & friendly</p>
-      </div>
-      <div class="card">
-        <p>
-          I’m a computer engineer focused on AI/ML and data‑driven products. I love shipping small, useful things — from ML evaluation tools to playful web experiments. I care about clarity, accessibility, and the little details that make experiences feel human.
-        </p>
-      </div>
-    </section>
-
-    <!-- CONTACT / LINKS -->
+    <!-- CONTACT -->
     <section id="contact">
       <div class="section-title">
-        <h2>Contact</h2>
-        <p class="meta">Open to opportunities, collabs, and coffee.</p>
+        <h2></h2>
+        <p class="meta"></p>
       </div>
       <div class="grid cols-2">
         <div class="card">
-          <h3>Say hello</h3>
-          <p class="meta">Email · LinkedIn · GitHub · Medium · Spotify</p>
+          <h3>Contact</h3>
+          <p class="meta"></p>
           <div class="grid cols-2" id="links"></div>
         </div>
         <div class="card">
-          <h3>Small note</h3>
-          <p>Prefer async messages; I’ll reply as soon as I can. For quick chats, mention context + goals to speed things up.</p>
+          <p>Always open to exciting opportunities, collaborations, and coffee chats!</p>
         </div>
       </div>
     </section>
@@ -300,39 +103,31 @@
     <footer class="container">
       <div class="split">
         <span>© <span id="year"></span> Beyza</span>
-        <span class="right">Built with plain HTML/CSS/JS · <span class="meta">No frameworks</span></span>
+        <span class="right"><span class="meta"></span></span>
       </div>
     </footer>
   </main>
 
-  <!-- Corner will be injected here by script -->
-
   <script>
-    // ---------- Lightweight site config (edit only this object) ----------
     const CONFIG = {
-      theme: 'auto', // 'dark' | 'light' | 'auto'
-      spotifyUrl: 'https://open.spotify.com/user/tb3ogct45km4koi9k8u0546c2?si=eca7ad02c3284d27',
+      theme: 'auto',
       links: [
-        { label: 'GitHub', url: 'https://github.com/yildizbeyza' },
-        { label: 'LinkedIn', url: 'https://www.linkedin.com/in/beyzanur-yildiz' },
-        { label: 'Medium', url: 'https://medium.com/@reverans.cs' },
+        { label: 'GitHub',  url: 'https://github.com/yildizbeyza' },
+        { label: 'LinkedIn',url: 'https://www.linkedin.com/in/beyzanur-yildiz' },
+        { label: 'Medium',  url: 'https://medium.com/@reverans.cs' },
         { label: 'Spotify', url: 'https://open.spotify.com/user/tb3ogct45km4koi9k8u0546c2?si=eca7ad02c3284d27' }
       ],
-      nowPlaying: 'Stardew Valley',
-      book: { title: 'Atomic Habits', url: 'https://jamesclear.com/atomic-habits', note: 'Tiny changes, compounding effects.' },
-      film: { title: 'Se7en (1995)', url: 'https://www.imdb.com/title/tt0114369/', note: 'Descent into the abyss, brilliantly paced.' },
-      blog: { title: 'The “boring” roadmap', url: 'https://martinfowler.com/', note: 'Simplicity scales; process beats chaos.' },
       corner: [
-        { label: 'Makams', url: 'http://www.turkishmusicportal.org/en/types-of-turkish-music/turkish-classical-music-makams' },
-        { label: 'Draw', url: 'https://drawabox.com/' },
-        { label: 'Scales', url: 'https://piano-ology.com/scales/middle-eastern-scale-theory-and-ear-training/' },
+        { label: 'a corner for you' },
+        { label: 'Makams',   url: 'http://www.turkishmusicportal.org/en/types-of-turkish-music/turkish-classical-music-makams' },
+        { label: 'Draw',     url: 'https://drawabox.com/' },
+        { label: 'Scales',   url: 'https://piano-ology.com/scales/middle-eastern-scale-theory-and-ear-training/' },
         { label: 'Quincunx', url: 'https://www.mathsisfun.com/data/quincunx.html' },
-        { label: 'Sakuga', url: 'https://www.sakugabooru.com/tag?order=date' },
+        { label: 'Sakuga',   url: 'https://www.sakugabooru.com/tag?order=date' },
         { label: 'Sakublog', url: 'https://blog.sakugabooru.com/' }
       ]
     };
 
-    // ---------- Theme handling ----------
     const root = document.documentElement;
     const saved = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -348,51 +143,30 @@
       applyTheme(next);
     });
 
-    // ---------- Populate dynamic bits ----------
     document.getElementById('year').textContent = new Date().getFullYear();
-    document.getElementById('spotifyBtn').href = CONFIG.spotifyUrl;
-    document.getElementById('nowPlaying').textContent = CONFIG.nowPlaying;
-
-    const linkWrap = document.getElementById('links');
     const quickWrap = document.getElementById('quickLinks');
+    const linkWrap  = document.getElementById('links');
     CONFIG.links.forEach(l=>{
       const a = document.createElement('a');
-      a.className = 'pill'; a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = l.label; linkWrap.appendChild(a.cloneNode(true)); quickWrap.appendChild(a);
+      a.className = 'pill'; a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = l.label;
+      if (quickWrap) quickWrap.appendChild(a.cloneNode(true));
+      linkWrap.appendChild(a);
     });
 
-    const setCard = (prefix, data)=>{
-      document.getElementById(prefix+'Title').textContent = data.title;
-      document.getElementById(prefix+'Note').textContent = data.note;
-      document.getElementById(prefix+'Url').href = data.url;
-    }
-    setCard('book', CONFIG.book);
-    setCard('film', CONFIG.film);
-    setCard('blog', CONFIG.blog);
-
-    // Corner buttons (right side on desktop)
     const cornerHost = document.createElement('div');
     cornerHost.className = 'corner';
     CONFIG.corner.forEach(item=>{
-      const b = document.createElement('a');
-      b.className = 'cbtn'; b.href = item.url; b.target = '_blank'; b.rel = 'noopener'; b.textContent = item.label;
-      cornerHost.appendChild(b);
+      if(item.url){
+        const b = document.createElement('a');
+        b.className = 'cbtn'; b.href = item.url; b.target = '_blank'; b.rel = 'noopener'; b.textContent = item.label;
+        cornerHost.appendChild(b);
+      } else {
+        const t = document.createElement('div');
+        t.className = 'cbtn'; t.textContent = item.label;
+        cornerHost.appendChild(t);
+      }
     });
     document.body.appendChild(cornerHost);
-
-    // ---------- Active link highlight ----------
-    const navLinks = Array.from(document.querySelectorAll('nav a'));
-    const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if(e.isIntersecting){
-          const id = '#'+e.target.id;
-          navLinks.forEach(l=>l.classList.toggle('active', l.getAttribute('href')===id));
-        }
-      })
-    }, { rootMargin: '-50% 0px -45% 0px', threshold: [0, 1]});
-    sections.forEach(s => io.observe(s));
-
-    // Smooth scroll (native is enough on modern browsers)
     document.documentElement.style.scrollBehavior = 'smooth';
   </script>
 </body>
