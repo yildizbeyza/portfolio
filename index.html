@@ -46,10 +46,9 @@
     .container{max-width:1120px; margin-inline:auto; padding:24px;}
 
     /* Topbar */
-    header{position:sticky; top:0; z-index:20; backdrop-filter:saturate(180%) blur(8px); background:color-mix(in srgb, var(--bg), transparent 20%);}    
+    header{position:sticky; top:0; z-index:999; backdrop-filter:saturate(180%) blur(8px); background:color-mix(in srgb, var(--bg), transparent 8%);}    
     .topbar{display:flex; align-items:center; gap:16px; padding:12px 24px; border-bottom:1px solid color-mix(in srgb, var(--muted), transparent 75%);}    
     .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px}
-    .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); box-shadow:0 0 0 6px var(--ring);} 
     nav{margin-left:auto; display:flex; gap:16px; flex-wrap:wrap}
     nav a{padding:8px 12px; border-radius:10px; color:var(--muted)}
     nav a.active, nav a:hover{color:var(--text); background:color-mix(in srgb, var(--brand) 12%, transparent)}
@@ -92,12 +91,18 @@
     .split{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
     .right{margin-left:auto}
     .kbd{font:600 12px/1 Inter; border:1px solid color-mix(in srgb, var(--muted), transparent 60%); padding:6px 8px; border-radius:8px}
+
+    /* Corner links */
+    .corner{position:fixed; right:18px; top:120px; display:flex; flex-direction:column; gap:10px; z-index:998}
+    @media (max-width: 960px){ .corner{display:none} }
+    .corner .cbtn{display:inline-flex; align-items:center; justify-content:center; padding:8px 10px; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted), transparent 65%); background:linear-gradient(180deg, var(--panel), var(--panel-2)); box-shadow:var(--shadow); font-weight:600; font-size:.9rem;}
+    .corner .cbtn:hover{transform:translateY(-1px);} 
   </style>
 </head>
 <body>
   <header>
     <div class="topbar container">
-      <div class="brand"><span class="dot" aria-hidden="true"></span> Beyza</div>
+      <div class="brand">hi, i am beyza!</div>
       <nav aria-label="Primary">
         <a href="#projects">Projects</a>
         <a href="#experience">Experience</a>
@@ -121,19 +126,14 @@
         <p class="lead">Simple, fast, and delightful. This site is a clean starting point we can grow together — projects, experiments, travels, and the fun bits.
         </p>
         <div class="cta-row">
-          <a class="btn" id="spotifyBtn" href="#" target="_blank" rel="noopener">▶︎ Open my Spotify playlist</a>
+          <a class="btn" id="spotifyBtn" href="#" target="_blank" rel="noopener">▶︎ Open my Spotify</a>
           <a class="btn ghost" href="#contact">Get in touch</a>
           <a class="btn ghost" href="#links">Links</a>
         </div>
       </div>
       <div class="card">
         <div class="section-title"><h2>Quick Links</h2><p class="meta">Edit later with your real URLs</p></div>
-        <div class="grid cols-2">
-          <a class="pill" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-          <a class="pill" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="pill" href="https://medium.com/" target="_blank" rel="noopener">Medium</a>
-          <a class="pill" href="mailto:hello@example.com">Email</a>
-        </div>
+        <div class="grid cols-2" id="quickLinks"></div>
         <p class="meta" style="margin-top:10px">You’ll be able to swap these in <span class="kbd">/script config</span> below.</p>
       </div>
     </section>
@@ -287,7 +287,7 @@
       <div class="grid cols-2">
         <div class="card">
           <h3>Say hello</h3>
-          <p class="meta">Email · LinkedIn · GitHub · Medium</p>
+          <p class="meta">Email · LinkedIn · GitHub · Medium · Spotify</p>
           <div class="grid cols-2" id="links"></div>
         </div>
         <div class="card">
@@ -305,21 +305,31 @@
     </footer>
   </main>
 
+  <!-- Corner will be injected here by script -->
+
   <script>
     // ---------- Lightweight site config (edit only this object) ----------
     const CONFIG = {
       theme: 'auto', // 'dark' | 'light' | 'auto'
-      spotifyPlaylist: 'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M',
+      spotifyUrl: 'https://open.spotify.com/user/tb3ogct45km4koi9k8u0546c2?si=eca7ad02c3284d27',
       links: [
-        { label: 'GitHub', url: 'https://github.com/your-username' },
-        { label: 'LinkedIn', url: 'https://www.linkedin.com/in/your-handle' },
-        { label: 'Medium', url: 'https://medium.com/@your-handle' },
-        { label: 'Email', url: 'mailto:hello@example.com' }
+        { label: 'GitHub', url: 'https://github.com/yildizbeyza' },
+        { label: 'LinkedIn', url: 'https://www.linkedin.com/in/beyzanur-yildiz' },
+        { label: 'Medium', url: 'https://medium.com/@reverans.cs' },
+        { label: 'Spotify', url: 'https://open.spotify.com/user/tb3ogct45km4koi9k8u0546c2?si=eca7ad02c3284d27' }
       ],
       nowPlaying: 'Stardew Valley',
       book: { title: 'Atomic Habits', url: 'https://jamesclear.com/atomic-habits', note: 'Tiny changes, compounding effects.' },
       film: { title: 'Se7en (1995)', url: 'https://www.imdb.com/title/tt0114369/', note: 'Descent into the abyss, brilliantly paced.' },
-      blog: { title: 'The “boring” roadmap', url: 'https://martinfowler.com/', note: 'Simplicity scales; process beats chaos.' }
+      blog: { title: 'The “boring” roadmap', url: 'https://martinfowler.com/', note: 'Simplicity scales; process beats chaos.' },
+      corner: [
+        { label: 'Makams', url: 'http://www.turkishmusicportal.org/en/types-of-turkish-music/turkish-classical-music-makams' },
+        { label: 'Draw', url: 'https://drawabox.com/' },
+        { label: 'Scales', url: 'https://piano-ology.com/scales/middle-eastern-scale-theory-and-ear-training/' },
+        { label: 'Quincunx', url: 'https://www.mathsisfun.com/data/quincunx.html' },
+        { label: 'Sakuga', url: 'https://www.sakugabooru.com/tag?order=date' },
+        { label: 'Sakublog', url: 'https://blog.sakugabooru.com/' }
+      ]
     };
 
     // ---------- Theme handling ----------
@@ -340,13 +350,14 @@
 
     // ---------- Populate dynamic bits ----------
     document.getElementById('year').textContent = new Date().getFullYear();
-    document.getElementById('spotifyBtn').href = CONFIG.spotifyPlaylist;
+    document.getElementById('spotifyBtn').href = CONFIG.spotifyUrl;
     document.getElementById('nowPlaying').textContent = CONFIG.nowPlaying;
 
     const linkWrap = document.getElementById('links');
+    const quickWrap = document.getElementById('quickLinks');
     CONFIG.links.forEach(l=>{
       const a = document.createElement('a');
-      a.className = 'pill'; a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = l.label; linkWrap.appendChild(a);
+      a.className = 'pill'; a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = l.label; linkWrap.appendChild(a.cloneNode(true)); quickWrap.appendChild(a);
     });
 
     const setCard = (prefix, data)=>{
@@ -357,6 +368,16 @@
     setCard('book', CONFIG.book);
     setCard('film', CONFIG.film);
     setCard('blog', CONFIG.blog);
+
+    // Corner buttons (right side on desktop)
+    const cornerHost = document.createElement('div');
+    cornerHost.className = 'corner';
+    CONFIG.corner.forEach(item=>{
+      const b = document.createElement('a');
+      b.className = 'cbtn'; b.href = item.url; b.target = '_blank'; b.rel = 'noopener'; b.textContent = item.label;
+      cornerHost.appendChild(b);
+    });
+    document.body.appendChild(cornerHost);
 
     // ---------- Active link highlight ----------
     const navLinks = Array.from(document.querySelectorAll('nav a'));
