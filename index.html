@@ -1,0 +1,57 @@
+// filename: index.html
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <title>Beyza • About</title>
+  <meta name="description" content="Beyza's personal site — About, CV, Portfolio, and Turkish downloads." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preload" href="assets/css/styles.css" as="style" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Top Navigation (reused on every page) -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner container">
+      <div class="brand">
+        <button class="toggle" data-toggle-theme aria-label="Toggle color theme" title="Toggle theme">☾/☀</button>
+        <div class="small">Beyza • Portfolio</div>
+      </div>
+
+      <button class="hamburger" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+        <span class="hamburger-box" aria-hidden="true"></span>
+      </button>
+
+      <nav id="site-nav" class="nav" role="navigation" aria-label="Main">
+        <a href="index.html">About</a>
+        <a href="cv.html">
+          <span class="cv-label-full">Curriculum Vitae</span>
+          <span class="cv-label-short">CV</span>
+        </a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="turkish.html">Turkish</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container stack-lg">
+    <section class="card">
+      <h1 class="visually-hidden">About</h1>
+      <div id="about-text" class="prose"></div>
+      <div class="actions">
+        <a id="btn-email" class="btn" href="#" data-external="false">E-mail</a>
+        <a id="btn-linkedin" class="btn btn-outline" href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a id="btn-github" class="btn btn-outline" href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <small>© <span id="year"></span> Beyza</small>
+  </footer>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
