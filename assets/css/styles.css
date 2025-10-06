@@ -1,0 +1,70 @@
+:root {
+  --bg: #f8f9fb;
+  --text: #111;
+  --border: #ddd;
+  --accent: #111;
+  --radius: 10px;
+}
+html[data-theme="dark"] {
+  --bg: #0d1117;
+  --text: #e8eaed;
+  --border: #222;
+  --accent: #e8eaed;
+}
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+.topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 960px;
+  margin: auto;
+}
+.nav a {
+  margin: 0 0.5rem;
+  text-decoration: none;
+  color: var(--text);
+}
+#theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.container {
+  max-width: 960px;
+  margin: auto;
+  padding: 1rem;
+}
+section { margin-bottom: 3rem; }
+.links a {
+  margin-right: 10px;
+  text-decoration: none;
+  color: var(--accent);
+}
+.pdf-viewer {
+  width: 100%;
+  height: 700px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.footer {
+  text-align: center;
+  color: var(--text);
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+}
