@@ -3,77 +3,725 @@
   <head>
     <!-- Page setup -->
     <meta charset="utf-8">
-    <title>Your title here</title>
+    <title>Beyza's Portfolio</title>
     <meta name="description" content="A brief description of your site for search engines">
-    <meta name="author" content="Information about the author here">
+    <meta name="Beyza" content="Information about the author here">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
     <link rel="icon" type="image/png" href="favicon.png">
   
     <!-- Stylesheets -->
-    <!-- Reset default styles and add support for google fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" type="text/css" />
-    <link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
-   
-    <!-- Custom styles -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
     <link href="style.css" rel="stylesheet" type="text/css" />
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>    
-
-    <!-- Want to add Bootstrap? -->
-    <!-- Visit: https://getbootstrap.com/docs/4.3/getting-started/introduction/ -->
-    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   </head>
   
   <body>
 
     <header id="header">
+      <!-- Dil butonları -->
+      <div id="lang-switch">
+        <button onclick="setLang('en')">🇬🇧 English</button>
+        <button onclick="setLang('tr')">🇹🇷 Türkçe</button>
+      </div>
+
       <img src="logo.png">
-      <h1>Simple Website</h1>
-      
-      <!-- Menu link fragment #id should match a div id. Example: <a href="#home"> links to <div id="home"></div>  -->
+      <h1>
+  <span class="lang tr">merhaba, ben beyza!</span>
+  <span class="lang en">hi, i am beyza!</span>
+</h1>
+
+
+      <!-- Menü -->
       <ul class="main-menu">
-        <li><a href="#home">home</a></li>
-        <li><a href="#about">about</a></li>
-        <li><a href="#contact">contact</a></li>
-      </ul>                 
+  <li>
+    <a href="#about">
+      <span class="lang tr">hakkımda</span>
+      <span class="lang en">about</span>
+    </a>
+  </li>
+  <li>
+    <a href="#home">
+      <span class="lang tr">portföy</span>
+      <span class="lang en">portfolio</span>
+    </a>
+  </li>
+  <li>
+    <!-- CV iki dilde de aynı kalacaksa tek metin bırak -->
+    <a href="#cv">curriculum vitae</a>
+  </li>
+  <li>
+    <a href="#contact">
+      <span class="lang tr">iletişim</span>
+      <span class="lang en">contact</span>
+    </a>
+  </li>
+</ul>
+
+
     </header>
    
     <div id="container">
       <div class="inner">
         <div id="content"> 
           
-          <div id="home" class="content-region hide">
-            <h2>Home</h2>
-            <p>
-              This is a simple website template published with Github Pages. <a href="https://github.com/zirafa/simple-website-template">Fork this repository</a> to create your own site!
-            </p>
-          </div>
-          
+<!-- PORTFOLIO -->
+<div id="home" class="content-region hide">
+  <div class="lang en">
+    <h2>Portfolio</h2>
+    <p>This section reflects my curiosity to build, learn, and experiment beyond professional or academic work.</p>
+    <p>Some of my ideas take form in a line of code, a theater stage, or a 3D-printed design. A few of them are finished projects, while others are still evolving, alive in thought and motion.</p>
+    <p>Each represents the point where engineering and creativity meet, and where the joy lies not only in the outcome, but in the process itself.</p>
+  </div>
+
+  <div class="lang tr">
+    <h2>Portföy</h2>
+    <p>Bu bölüm, profesyonel ya da akademik çalışmalarımın dışında, üretmeye, öğrenmeye ve yeni şeyler denemeye duyduğum merakı anlatıyor.</p>
+    <p>Fikirlerimin bir kısmı bir kod satırında, bir tiyatro sahnesinde ya da 3B baskıda hayat buluyor. Kimisi tamamlanmış projeler, kimisi ise hâlâ zihnimde büyüyen ve eylemde hareket hâlinde olan çalışmalar.</p>
+    <p>Her biri, mühendislik ile yaratıcılığın kesiştiği yerde, yalnız sonucun değil, sürecin de keyif verdiği bir üretimi temsil ediyor.</p>
+  </div>
+
+  <!-- Portfolio quick navigation -->
+<div class="portfolio-links">
+  <ul>
+    <li><a href="#proj-3d">3D Modeling & Printing</a></li>
+    <li><a href="#proj-music">Music Outputs with Machine Learning Algorithms</a></li>
+    <li><a href="#proj-stem">STEM Specialist – AI Engineer</a></li>
+    <li><a href="#proj-extra">Additional Works</a></li>
+    <li><a href="#proj-podcast">Podcasting</a></li>
+    <li><a href="#proj-theatre">Theatre</a></li>
+    <li><a href="#proj-photo">Photography</a></li>
+    <li><a href="#proj-crafts">Crafts & Games</a></li>
+    <li><a href="#proj-drawing">Drawing · Modeling · Storytelling</a></li>
+  </ul>
+</div>
+
+
+  <!-- BÜTÜN KARTLAR BURADA -->
+  <div class="projects">
+
+    <!-- PROJECT 1: 3D Modelleme ve Baskı -->
+    <article id="proj-3d" class="project">
+      <div class="project-body">
+        <div class="lang en">
+          <h3>3D Modeling & Printing</h3>
+          <p>For the past few years, I’ve been learning 3D-printer electronics/software (custom Prusa Steel i3) and building my own parts while practicing CAD modeling in tools like Fusion 360. Below is a recent model I designed and printed. Design, CAD and printing were all done by me.</p>
+        </div>
+        <div class="lang tr">
+          <h3>3D Modelleme ve Baskı</h3>
+          <p>Birkaç senedir custom Prusa Steel i3 ile 3D yazıcı elektroniği/yazılımını öğreniyor, Fusion 360 gibi CAD programlarında modelleyip kendi parçalarımı üretiyorum. Aşağıda tasarımını yaptığım ve baskısını aldığım güncel bir modelin sürecinden kareler var; tasarım, çizim ve baskı aşamalarının tamamı bana ait.</p>
+        </div>
+      </div>
+
+      <!-- 4 görsellik galeri (tek katman; iç içe .gallery yok) -->
+      <div class="gallery-2x2">
+        <figure><img class="fit-all" src="assets/3d-setup.jpg" alt=""></figure>
+        <figure><img class="fit-all" src="assets/3d-finished.jpg" alt=""></figure>
+        <figure><img src="assets/3d-cad-1.jpg" alt=""></figure>
+        <figure><img src="assets/3d-cad-2.jpg" alt=""></figure>
+      </div>
+    </article>
+
+    <!-- PROJECT 2: ML ile Müzik Çıktıları (metin kartı) -->
+    <article id="proj-music" class="project">
+      <div class="project-body">
+
+        <!-- EN -->
+        <div class="lang en">
+          <h3>Music Outputs with Machine Learning Algorithms</h3>
+          <p>In these and similar projects, I try to compose original music using ML algorithms and artificial intelligence. For this reason, I research music theory and related areas and also learn the technical mathematics of art. Although this has been a field I have been interested in for a long time, I plan to build another project with these outputs, so my outputs are not public.</p>
+          <p>Below I tried to explain one of my music output processes:</p>
+          <p>On the technical side, I used a deep learning model called LSTM (I have also worked with Transformers, RNN and GANs). In the first step, I fed the model many MIDI files of classical piano pieces for training. By analyzing the note and chord sequences in these pieces, the model learned the basic rules and patterns of music, that is, which note tends to follow which. For technical knowledge about music I had to read a lot continuously. After training was completed, I gave the model a small seed melody and had it predict the notes one by one using the patterns it had learned, thus creating a completely original composition that had never been heard before. With ML algorithms and sometimes without using deep learning or machine learning techniques, using only Python code (MIDI libraries, music21, pyo, etc.) I produce various music outputs and edit them with applications such as Reaper.</p>
+        </div>
+
+        <!-- TR -->
+        <div class="lang tr">
+          <h3>Machine Learning Algoritmaları ile Müzik Çıktıları</h3>
+          <p>Bu ve benzer projelerimde, ML algoritmaları ve yapay zekayı kullanarak özgün müzikler bestelemeye çalışıyorum. Bu sebepten müzik teorisi vb. alanlarda araştırmalar yapıyor ayrıca sanat teknik matematiğini öğreniyorum. Uzun zamandır ilgilendiğim kendimce bir alan olmakla beraber normal şartlar altında bu çıktılarımla da başka bir proje yapmayı planladığımdan çıktılarım public değil.</p>
+          <p>Aşağıda yaptığım müzik çıktısı süreçlerinden birini anlatmaya çalıştım:</p>
+          <p>Teknik taraftan, LSTM adı verilen bir derin öğrenme modeli kullandım. (Transformers, RNN ve GANs kullandığım çalışmalarım da olmuştu.) İlk adımda, modele train için çok sayıda klasik piyano eserinin MIDI dosyasını verdim. Model bu müziklerdeki nota ve akor dizilimlerini analiz ederek müziğin temel kurallarını ve kalıplarını, yani hangi notanın hangisini takip etme eğiliminde olduğunu öğrendi. Müzik ile ilgili teknik bilgilerim için sürekli olarak çok fazla okumalar yapmam gerekti. Train tamamlandıktan sonra, modele ufak bir başlangıç melodi girdisi verdim ve elindeki kalıpları kullanarak notaları tek tek predict etmesini, böylece daha önce hiç duyulmamış, tamamen özgün bir beste yaratmasını sağladım. ML algoritmaları ve bazen de deep learning veya machine learning tekniklerinden yararlanmadan salt Python kodları ile (MIDI kütüphaneleri, music21, pyo vb.) çeşitli müzik çıktıları oluşturuyor ve bunları başlıca Reaper olmak üzere çeşitli uygulamalar ile düzenliyorum.</p>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- PROJECT 3: STEM Specialist - AI Engineer -->
+<article id="proj-stem" class="project">
+  <div class="project-body">
+
+    <!-- ENGLISH -->
+    <div class="lang en">
+      <h3>STEM Specialist – AI Engineer</h3>
+      <p>I worked as an AI Engineer and STEM Specialist for three months at Green Chimneys Summer Camp in New York. In this section, I want to focus on my STEM Specialist experience.</p>
+      <p>During my middle and high school years, I always wished I had a mentor who could guide me in STEM fields. When I reached university, I started leading STEM activities—sometimes voluntarily, sometimes for a small fee. The biggest of these experiences took place in the summer of 2024 at Green Chimneys, a summer school in New York, USA.</p>
+      <p>Alongside my AI engineering role, I also designed and conducted various STEM experiments for children aged 5–17. My lesson plans followed a simple but powerful structure: first introducing a principle (for example, center of gravity or buoyant force), then applying it through hands-on experiments. The photos below show moments from those sessions, where children participated actively and learned by creating with their own hands.</p>
+    </div>
+
+    <!-- TÜRKÇE -->
+    <div class="lang tr">
+      <h3>STEM Specialist – AI Engineer</h3>
+      <p>New York’taki Green Chimneys Yaz Kampında AI Engineer ve STEM Specialist olarak 3 ay çalıştım. Bu dosya konusu dahilinde STEM Specialist kısmına değinmek istiyorum.</p>
+      <p>Ortaokul ve lise yıllarımda STEM alanında aktif olarak bir mentorum olmasını çok isterdim. Üniversiteye geldiğimde gönüllü veya ufak ücret karşılığında STEM çalışmaları yürütmeye çalıştım. Bunlardan en büyüğü 2024 yazında Amerika’nın New York eyaletindeki Green Chimneys Yaz Okulu idi.</p>
+      <p>AI Engineer olarak çalışmanın yanı sıra aynı zamanda kampta 5–17 yaş aralığındaki çocuklara çeşitli STEM deneyleri dizayn ettim ve uygulattım. Ders planım başlıca belirli bir prensibin (örneğin ağırlık merkezi, kaldırma kuvveti gibi) açıklanması ve sonrasında deney aşamasının yapılması sistemiyle ilerlemekteydi. Aşağıda gördüğünüz fotoğraflar, çocukların kendi becerilerini kullanarak derslere katılımlarından örneklerdir.</p>
+    </div>
+  </div>
+
+  <!-- 6 görsellik galeri -->
+  <div class="gallery-2x2">
+    <figure><img src="assets/s1.jpg" alt=""></figure>
+    <figure><img src="assets/s2.jpg" alt=""></figure>
+    <figure><img src="assets/s3.jpg" alt=""></figure>
+    <figure><img src="assets/s4.jpg" alt=""></figure>
+    <figure><img src="assets/s5.jpg" alt=""></figure>
+  </div>
+</article>
+
+<!-- PROJECT 4: Additional Works -->
+<article id="proj-extra" class="project">
+  <div class="project-body">
+
+    <!-- ENGLISH -->
+    <div class="lang en">
+      <h3>Additional Works</h3>
+      <p>During my high school years, together with my friends, I helped establish the <em>YIAFL Science and Culture Team</em>, inspired partly by Edelkrone’s Carbon Solution constitutional system. I actively contributed to convincing our school’s investors to open a robotics laboratory equipped with LEGO EV3 and Arduino kits, which became one of the most important resources for students interested in engineering.</p>
+      <p>With the same group of friends, we also participated in several national intelligence and logic competitions such as TZO, TZV, and TBT, and I played an active role in founding the <em>School Logic Games Study Team</em> to encourage more students to take part in these competitions.</p>
+      <p>Additionally, I attended the <em>Astronomy and Space Sciences School</em> organized by Istanbul University’s Astronomy and Space Sciences Club for two years, completing courses equivalent to undergraduate-level Astronomy and Space Physics.</p>
+      <p>Finally, during my four years of high school, I was personally invited by Prof. Dr. Nihat Berker to attend his undergraduate physics lectures, where I had the opportunity to assist him and take part in research projects alongside him.</p>
+    </div>
+
+    <!-- TÜRKÇE -->
+    <div class="lang tr">
+      <h3>Ek Çalışmalar</h3>
+      <p>Lise yıllarında arkadaşlarımız ile Edelkrone Karbon Solution anayasa sisteminden de etkilenerek okulumuzda anayasal bir sistem ile çalışması planlanan ve başarılı bir yolculuğu olan <em>YİAFL Bilim Kültür Takımı</em>nın kurulmasında aktif rol oynadım. Okulumuz yatırımcılarını uzun iknalar sonucunda okulumuz LEGO EV3 robot ekipmanları ve Arduino setleriyle donatılmış robotik laboratuvarının açılması konusunda ikna ederek bu sürece katkı sağladım.</p>
+      <p>Yine aynı grup arkadaşlarımızla aktif olarak katıldığımız <em>TZO</em>, <em>TZV</em> ve <em>TBT</em> zekâ yarışmalarına okulumuzdan katılımın artmasını amaçlayarak <em>Zekâ Oyunları Çalışma Takımı</em>nın kurulmasında da aktif rol oynama şansım oldu.</p>
+      <p>İstanbul Üniversitesi Astronomi ve Uzay Bilimleri Kulübü’nün düzenlediği <em>Astronomi ve Uzay Bilimleri Okulu</em>na iki yıl boyunca katılarak bölümün Astronomi ve Uzay Fiziği derslerini tamamlama fırsatım oldu.</p>
+      <p>Son olarak, dört yıllık lise eğitimim süresince Prof. Dr. Nihat Berker tarafından lisans fizik derslerine davet edilerek katılma ve hem proje çalışmalarında hem de asistanlık görevinde kendisiyle birlikte çalışma fırsatı elde ettim.</p>
+    </div>
+
+  </div>
+</article>
+
+<!-- PROJECT 5: Podcasting -->
+<article id="proj-podcast" class="project">
+  <div class="project-body">
+
+    <!-- ENGLISH -->
+    <div class="lang en">
+      <h3>Podcasting</h3>
+      <p>For the past few years, I have been on a podcasting journey that has not yet been made public, but I plan to organize and publish it soon. As technical equipment, I use a Last Voice BM800C-BK Professional Condenser Microphone and a Midex VS8 Plus audio mixer. For recording and editing, I mainly use Reaper.</p>
+      <p>This process has taught me a lot about sound engineering, audio processing, mixer usage, and especially the workflow inside Reaper. To improve my process, I constantly research and try new techniques, which makes the experience even more enjoyable for me.</p>
+      <p><strong>Some of my recording titles include:</strong><br>
+      – Why is asking the right questions important? Where can they take us?<br>
+      – This is what happens when I remove “international” from myself!<br>
+      – What happened to the children who chased knowledge?<br>
+      – Stone stairs and orange peels.<br>
+      – Is Ankara gray because it’s taxed 21 grams?<br>
+      – I can use the city!</p>
+    </div>
+
+    <!-- TÜRKÇE -->
+    <div class="lang tr">
+      <h3>Podcasting</h3>
+      <p>Birkaç senedir public olmayan ancak yakın zamanda projesini düzenlemeyi hedeflediğim bir podcasting serüveni içerisindeyim. Teknik ürün olarak Last Voice BM800C-BK Professional Condenser mikrofon ve Midex VS8 Plus ses mikseri kullanıyorum. Kayıt ve düzenleme süreci için ise başlıca Reaper uygulamasını kullanmaktayım.</p>
+      <p>Bu süreç bana ses mühendisliği, ses kullanım biçimleri, mikser kullanımı ve özellikle Reaper kullanımı açısından çok şey öğretti. Bunun dışında süreci geliştirebilmek için sürekli yeni yöntemler öğrenmek adına araştırmalar içerisinde bulunuyor ve yeni şeyler deneyerek kendi sürecime keyif kattığımı düşünüyorum.</p>
+      <p><strong>Bazı kayıtlarımın başlıkları:</strong><br>
+      – Doğru soruları sormak bence neden önemlidir? Doğru sorular bizi nerelere taşıyabilir?<br>
+      – İşte uluslarasını içimden çıkarınca böyle oluyor!<br>
+      – Bilgi peşinde koşan çocuklara ne oldu?<br>
+      – Taş merdivenler ve portakal kabukları.<br>
+      – Ankara 21 gram vergi aldığı için mi gri?<br>
+      – Ben şehri kullanabiliyorum!</p>
+    </div>
+
+  </div>
+
+  <!-- 1 görsel -->
+  <div class="gallery-2x2">
+    <figure><img src="assets/p1.jpg" alt="Podcast setup"></figure>
+  </div>
+</article>
+
+<!-- PROJECT 6: Theatre -->
+<article id="proj-theatre" class="project">
+  <div class="project-body">
+
+    <!-- ENGLISH -->
+    <div class="lang en">
+      <h3>Theatre</h3>
+      <p>I was an active member of the MEF Theatre Club. Together with my team, we performed the play <em>Keşanlı Ali Destanı</em>. The entire stage and set design process was handled by our team ourselves.</p>
+      <p>In addition to performing, I truly enjoy watching and reading theatre plays, and I try to join clubs or workshops whenever I can to continue performing. Since middle and high school, I have always tried to stay connected to theatre — watching, reading, and taking part in performances whenever possible.</p>
+    </div>
+
+    <!-- TÜRKÇE -->
+    <div class="lang tr">
+      <h3>Tiyatro</h3>
+      <p>MEF Tiyatro Kulübünde aktif bir üyeydim. Ekibimiz ile beraber <em>Keşanlı Ali Destanı</em> oyununu sahneledik. Oyunun tüm dekor ve sahne sürecini ekipçe kendimiz yaptık.</p>
+      <p>Bununla birlikte tiyatro izlemekten ve okumaktan oldukça zevk alıyor, fırsat buldukça sahne almak için kulüp ve eğitimlere katılmaya çalışıyorum. Ortaokul ve liseden beridir aktif olarak tiyatro çalışmalarına katılır, oyunlar izler ve okurum.</p>
+    </div>
+
+  </div>
+
+  <!-- 2 görsellik galeri -->
+  <div class="gallery-2x2">
+    <figure><img src="assets/t1.jpg" alt="Theatre performance photo 1"></figure>
+    <figure><img src="assets/t2.jpg" alt="Theatre performance photo 2"></figure>
+  </div>
+</article>
+
+<!-- PROJECT 7: Photography -->
+<article id="proj-photo" class="project">
+  <div class="project-body">
+
+    <!-- ENGLISH -->
+    <div class="lang en">
+      <h3>Photography</h3>
+      <p>I first became interested in photography during middle school through the Technical Photography Club opened by my Technology and Design teacher. Later, I earned the title of “the Photographer Girl” among my friends after taking photos at two of my close friends’ engagement and pre-wedding events. 🙂</p>
+      <p>Aside from school club activities and Pinterest reference explorations, I have no professional background — I simply enjoy taking photos. I believe it enhances one’s ability to observe and truly see. For my shots, I mostly use an older semi-professional Fujifilm camera or my Samsung Note 10 Lite phone.</p>
+    </div>
+
+    <!-- TÜRKÇE -->
+    <div class="lang tr">
+      <h3>Fotoğrafçılık</h3>
+      <p>Ortaokuldaki Teknoloji Tasarım Öğretmenimizin açtığı Teknik Fotoğrafçılık Kulübü ile ilgilenmeye başladığım bu alanda, iki yakın arkadaşımın nişan ve isteme süreçlerinde de o ‘Fotoğrafçı Kız’ şeklinde anılma rozetini kazanmış bulunuyorum. 🙂</p>
+      <p>Okul kulüplerinin etkinlikleri ve Pinterest referans araştırmaları dışında hiçbir profesyonelliğim söz konusu değil ancak fotoğraf çekmeyi seviyorum. Bence insanın gözlem ve görme yeteneğini arttırıyor. Çekimlerimde kullanma fırsatı bulduğum cihazlar çoğunlukla Fujifilm’in eski bir modeli olan yarı profesyonel fotoğraf makinesi veya cep telefonum Samsung Note 10 Lite oluyor.</p>
+    </div>
+
+  </div>
+
+  <!-- 3 görsellik galeri -->
+  <div class="gallery-2x2">
+    <figure><img src="assets/f1.jpg" alt="Photography example 1"></figure>
+    <figure><img src="assets/f2.jpg" alt="Photography example 2"></figure>
+    <figure><img src="assets/f3.jpg" alt="Photography example 3"></figure>
+  </div>
+</article>
+
+<!-- PROJECT 8: Crafts & Games -->
+<article id="proj-crafts" class="project">
+  <div class="project-body">
+
+    <!-- ENGLISH -->
+    <div class="lang en">
+      <h3>Crafts & Games</h3>
+      <p>I love coming up with creative ideas and bringing them to life. I often make handmade gifts, cook experimental recipes, design and create my own jewelry, belts, and hair accessories, and enjoy embroidery and cross-stitching. I also like building LEGO sets, completing puzzles, exploring artistic drawing techniques, and experimenting with different forms of art.</p>
+      <p>I enjoy playing both computer and board games, listening to stories, and storytelling itself. I take great pleasure in working on projects that combine the technical and artistic aspects of storytelling. Overall, this creative side of mine greatly influences how I approach problems and life in general — starting something from scratch or crafting something custom feels natural and deeply enjoyable to me.</p>
+    </div>
+
+    <!-- TÜRKÇE -->
+    <div class="lang tr">
+      <h3>El İşleri & Oyunlar</h3>
+      <p>Yaratıcı fikirler bulup bu fikirleri hayata geçirebilmeyi seviyorum. Kendi yaptığım el işi hediyeler, farklı yemek tarifleri pişirmek, kendi takılarımı, kemerlerimi ve tokalarımı kendim tasarlayıp yapmak, etamin-kanaviçe gibi el işleme ve dokumalarla ilgilenmek, Lego’lar inşa etmek, puzzle tamamlamak, çeşitli şekillerde teknik çizim ve sanatla ilgilenmek gibi aktiviteler hayatımda yer alıyor.</p>
+      <p>Bilgisayar oyunları ve kutu oyunları oynamayı, hikayeler dinlemeyi ve hikaye anlatıcılığını seviyorum. Hikaye anlatıcılığı ile ilgili teknik, sanatsal veya her ikisini de içeren projeler yapmaktan keyif alıyorum. Ayrıca bu yönüm, hayata bakışımı ve problemlere yaklaşımımı da etkiliyor; sıfırdan bir işe girişmek veya tamamen kendime özgü bir şey üretmek benim için hem çok keyifli hem de oldukça doğal bir süreç.</p>
+    </div>
+
+  </div>
+
+  <!-- 8 görsellik galeri -->
+  <div class="gallery-2x2">
+    <figure><img src="assets/j1.jpg" alt="Crafts and games photo 1"></figure>
+    <figure><img src="assets/j2.jpg" alt="Crafts and games photo 2"></figure>
+    <figure><img src="assets/j3.jpg" alt="Crafts and games photo 3"></figure>
+    <figure><img src="assets/j4.jpg" alt="Crafts and games photo 4"></figure>
+    <figure><img src="assets/j5.jpg" alt="Crafts and games photo 5"></figure>
+    <figure><img src="assets/j6.jpg" alt="Crafts and games photo 6"></figure>
+    <figure><img src="assets/j7.jpg" alt="Crafts and games photo 7"></figure>
+    <figure><img src="assets/j8.jpg" alt="Crafts and games photo 8"></figure>
+  </div>
+</article>
+
+<!-- PROJECT 9: Drawing - Modeling - Storytelling -->
+<article id="proj-drawing" class="project">
+  <div class="project-body">
+
+    <!-- ENGLISH -->
+    <div class="lang en">
+      <h3>Drawing · Modeling · Storytelling</h3>
+      <p>Creating aesthetic works using engineering and technology excites me beyond words. I use Affinity Designer and Blender to produce my own drawings, 3D models, and narrative scenes. Throughout this process, I aim to combine visual design with storytelling, developing both my technical and artistic sides simultaneously.</p>
+      <p>I’m not only interested in simple models — for example, I sometimes write custom scripts for Blender to make my workflow easier. In various ways like this, I enjoy using technology to grow through art. I find the intersection between engineering and art endlessly exciting.</p>
+    </div>
+
+    <!-- TÜRKÇE -->
+    <div class="lang tr">
+      <h3>Çizim · Modelleme · Hikaye Anlatıcılığı</h3>
+      <p>Mühendisliği ve teknolojiyi kullanarak estetik ürünler ortaya çıkarmak beni kelimelerle ifade edemeyeceğim kadar çok heyecanlandırıyor. Affinity Designer ve Blender uygulamalarını kullanarak kendi çizimlerimi, 3B baskı dışındaki modellerimi ve anlatısal sahnelerimi oluşturuyorum. Bu süreçte görsel tasarımı hikaye anlatımıyla birleştirerek teknik ve sanatsal yönümü aynı anda geliştirmeyi hedefliyorum.</p>
+      <p>Yalnızca basit modellerle ilgilenmiyor; örneğin Blender için işimi kolaylaştırabilecek bir script yazarak çalışmama devam edebiliyorum. Bu ve çeşitli şekillerle teknolojiyi kullanarak sanat çalışmalarıyla kendimi geliştirmekten keyif alıyorum. Sanatın farklı alanlarının mühendislik ile kesişmesi bence çok heyecan verici.</p>
+    </div>
+
+  </div>
+
+  <!-- 2 görsellik galeri -->
+  <div class="gallery-2x2">
+    <figure><img src="assets/b1.jpg" alt="Blender or Affinity design example 1"></figure>
+    <figure><img src="assets/b2.jpg" alt="Blender or Affinity design example 2"></figure>
+  </div>
+</article>
+
+  </div> <!-- /.projects -->
+</div> <!-- /#home -->
+
+
+
+          <!-- ABOUT (DÜZELTİLDİ: artık doğru yerde) -->
           <div id="about" class="content-region hide">
-            <h2>About</h2>
-            <p>
-              Sed tempus urna et pharetra pharetra massa massa ultricies. Porttitor rhoncus dolor purus non enim praesent. Id aliquet risus feugiat in ante metus dictum. 
-            </p>
+            <div class="lang en">
+              <h2>About</h2>
+              <p>Hello, I am Beyza. I am a computer engineer. However, for me, engineering is not just a professional title; it is a way of thinking and a way of life.</p>
+              <p>The Turkish word for “engineer,” <em>mühendis</em>, originates from the root word <em>hendese</em>. <em>Hendese</em> essentially means “one who can use geometry and mathematics,” and it is derived from the Greek <em>geōmetría</em>, meaning “to measure the earth.” Over time, the concept came to describe individuals proficient in mathematics and problem-solving who can apply logical structures to practical issues.</p>
+              <p>For this reason, throughout history, the word “engineer” has expressed not just a profession, but also a perspective: a mindset shaped by the ability to measure, analyze, and generate solutions. This is precisely how I view the concept.</p>
+              <p>Engineering is not just a title on paper for me, it is part of my identity. I approach the world with curiosity, use logic to understand problems, and draw upon creativity to develop solutions.</p>
+            </div>
+
+            <div class="lang tr">
+              <h2>Hakkımda</h2>
+              <p>Merhaba, ben Beyza. Bilgisayar mühendisiyim. Ancak benim için mühendislik yalnızca bir meslek unvanı değil; bir düşünme ve yaşama biçimi.</p>
+              <p>Türkçe’deki “mühendis” kelimesi, kökenini “hendese”den alır. “Hendese” aslında “geometri ve matematik kullanabilen kişi” anlamına gelir; bu kelime de Yunanca <em>geōmetría</em>dan, yani “yeryüzünü ölçmek”ten türemiştir. Zamanla bu kavram, matematikte ve problem çözmede yetkin, mantıksal yapıları pratik sorunlara uygulayabilen kişileri tanımlamak için kullanılmaya başlanmıştır.</p>
+              <p>Bu nedenle “mühendis” kelimesi tarih boyunca sadece bir mesleği değil, aynı zamanda bir bakış açısını da ifade etmiştir: ölçü, analiz ve çözüm üretme becerisiyle şekillenmiş bir zihniyeti. Ben de bu kavramı tam olarak böyle görüyorum.</p>
+              <p>Mühendislik benim için sadece kâğıt üzerindeki bir unvan değil; kimliğimin bir parçası. Dünyaya merakla yaklaşır, sorunları anlamak için mantığı kullanır ve çözümler geliştirmek için yaratıcılıktan beslenirim.</p>
+            </div>
           </div>
-          
+
+<!-- CURRICULUM VITAE -->
+<div id="cv" class="content-region hide">
+
+  <!-- ENGLISH -->
+  <div class="lang en">
+    <h2>Curriculum Vitae</h2>
+
+    <h3>EDUCATION</h3>
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>MEF University (100% English with ABET Accreditation, 75% Scholarship)</strong>
+        <span class="cv-right">Istanbul, TR</span>
+      </div>
+      <div class="cv-row">
+        <em>B.Eng. in Computer Engineering</em>
+        <span class="cv-right">2020–2025</span>
+      </div>
+      <ul>
+  <li><strong>Thesis I:</strong> 
+    <a href="https://github.com/yildizbeyza/SDP-1-Churn-Prediction-Recommendation-Engine-and-Chatbot-Designs-in-DsmartGO-platform" 
+       target="_blank">
+       Churn Prediction, Recommendation Engine, and Chatbot Designs in Video Streaming Services Industry
+    </a>
+  </li>
+  <li><strong>Thesis II:</strong> 
+    <a href="https://github.com/yildizbeyza/SDP-2-Benchmarking-LLMs-and-Transformer-Architectures-on-Turkish-Coreference-Resolution" 
+       target="_blank">
+       Benchmarking LLMs and Transformer Architectures on Turkish Coreference Resolution
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Kadir Has University</strong>
+        <span class="cv-right">Istanbul, TR</span>
+      </div>
+      <div class="cv-row">
+        <em>Physics – Prof. Dr. Nihat Berker</em>
+        <span class="cv-right">2016–2020</span>
+      </div>
+      <p>Completed university-level physics coursework under Prof. Dr. Nihat Berker, including mechanics, electromagnetism, quantum and statistical physics, and research on phase transitions and renormalization-group theory while in high school.</p>
+      <ul>
+        <li><strong>Thesis I:</strong> Phase Transitions in Fractal Scaling Value</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Yüksel İlhan Alanyalı Science High School</strong>
+        <span class="cv-right">Istanbul, TR</span>
+      </div>
+      <div class="cv-row">
+        <em>STEM, Math & Science</em>
+        <span class="cv-right">2015–2019</span>
+      </div>
+      <p><strong>Awards:</strong> 3rd Place in TÜBİTAK National Physics Olympiad; top results in national and international Math and Intelligence Games competitions.</p>
+    </div>
+
+    <h3>SKILLS &amp; INTERESTS</h3>
+    <p><strong>Programming &amp; Tools:</strong> Python, C#, C++; Git, GitHub, VS Code, PyCharm, Rider, Jupyter, Colab</p>
+    <p><strong>AI &amp; Machine Learning:</strong> Experience with PyTorch, TensorFlow, scikit-learn, and Hugging Face Transformers. Worked on LLM benchmarking, fine-tuning, and prompt engineering with structured and few-shot designs, including evaluation of model outputs. Applied Computer Vision models such as OpenCV, DeepFace, and Google Vision API for recognition tasks.</p>
+    <p><strong>Generative AI &amp; Automation:</strong> Stable Diffusion, Diffusers, LoRA fine-tuning, ControlNet, ComfyUI, FastAPI, RESTful API integration, workflow automation scripting (Python/Bash).</p>
+    <p><strong>Data &amp; Visualization:</strong> Pandas, NumPy, Matplotlib, Streamlit, Plotly, SQL (evaluation, metric comparison, experiment tracking).</p>
+    <p><strong>Game &amp; Simulation:</strong> Unity (C#), Unity ML-Agents, Blender Python API.</p>
+    <p><strong>MLOps &amp; Deployment, Creative-Maker Tools:</strong> Streamlit, Gradio, Hugging Face Spaces, Affinity Designer, PhotoWorks, Blender, FreeCAD; 3D printing &amp; laser-cut prototyping (Orca Slicer, Repetier-Host, Arduino integration); Reaper (audio editing).</p>
+    <p><strong>Operating Systems:</strong> Linux, Windows.</p>
+    <p><strong>Language:</strong> English (Advanced), Spanish (Duolingo-A1), Turkish (Native).</p>
+    <p><strong>Interests:</strong> Strategic Games &amp; Puzzles, Mind Games, Theater &amp; Performance, Cooking, DIY &amp; Handicraft, 3D Creative Design &amp; Prototyping, Podcasting, LEGO Building, Playing Computer Games, Popular Science.</p>
+
+    <h3>EXPERIENCE</h3>
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>ICRYPEX — AI/ML Engineering Intern</strong>
+        <span class="cv-right">Istanbul, TR · 2025 (2 months)</span>
+      </div>
+      <ul>
+        <li>Developed an NFT recommendation engine using Python and vector search (Pinecone) to improve personalization workflows.</li>
+        <li>Automated data ingestion and evaluation pipelines with API-based testing (Postman) and contributed to feature ranking iterations in collaboration with product teams.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Green Chimneys — STEM Specialist, AI/ML Engineer</strong>
+        <span class="cv-right">New York, USA · 2024 (4 months)</span>
+      </div>
+      <ul>
+        <li>Developed AI-assisted STEM activities using Python, Jupyter, and Google Colab to support interactive experiments.</li>
+        <li>Applied prompt design and workflow automation to simplify learning processes and demonstrate real-world uses of AI.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Presidency of Türkiye, Digital Transformation Office — Big Data &amp; AI Dept., AI/ML Engineering Intern</strong>
+        <span class="cv-right">Ankara, TR · 2023 (2 months)</span>
+      </div>
+      <ul>
+        <li>Developed and tested face and speech recognition systems using TensorFlow, DeepFace, OpenCV, and Google Cloud APIs.</li>
+        <li>Built automated pipelines for data processing and model evaluation to improve accuracy and reliability in an assistant robot project.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>DogGO — Backend Developer Intern</strong>
+        <span class="cv-right">Istanbul, TR · 2022 (1 month)</span>
+      </div>
+      <ul>
+        <li>Assisted in backend development tasks for the DogGO mobile app using Scala and Cassandra.</li>
+        <li>Gained basic experience with API structure, database integration, and version control in a startup environment.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>MEF University</strong>
+        <span class="cv-right">Istanbul, TR</span>
+      </div>
+      <ul>
+        <li><em>Undergraduate Teaching Assistant – Programming Studio Labs (2024–2025 Spring):</em> Guided students in programming and debugging across multiple languages, helping them improve code structure and problem-solving efficiency.</li>
+        <li><em>Undergraduate Teaching Assistant – Digital Systems Design Labs (2023–2024 Fall):</em> Assisted students in designing and testing digital circuits using Logisim, breadboards, and Armv9 architecture.</li>
+        <li><em>Technology Transfer Office Student Assistant (2021–2023):</em> Contributed to software development projects with national and international collaborators through the university’s R&D center.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Kadir Has University — Course Assistant (Augmented Mechanics)</strong>
+        <span class="cv-right">Istanbul, TR · 2018 (1 year)</span>
+      </div>
+      <ul>
+        <li>Assisted Prof. Dr. Nihat Berker in lab instruction and research preparation after completing the course with top grades.</li>
+      </ul>
+    </div>
+
+    <h3>LEADERSHIP &amp; ACTIVITIES</h3>
+    <ul>
+      <li><strong>TEKNOFEST – Tourism Technologies, 2nd Prize (2021):</strong> Contributed to backend and frontend development of <em>DigiChef</em>, a mobile app designed to reduce food waste in buffet-style dining by promoting mindful portion selection.</li>
+      <li><strong>MEF Dynamics (2021–2023):</strong> Founding team member; collaborated on projects and competitions.</li>
+      <li><strong>IEEE Computer Society, Vice-Chair (2020–2021):</strong> Led team initiatives and supported community-driven technical events.</li>
+      <li><strong>MEF Theatre (2020–2025):</strong> Performed as actress and contributed to musical recordings; supported set decor and costume design.</li>
+      <li><strong>MEF Gaming (2021–2024):</strong> Actively participated in Game Jams and developer-focused events.</li>
+    </ul>
+  </div>
+
+  <!-- TÜRKÇE -->
+  <div class="lang tr">
+    <h2>Özgeçmiş</h2>
+
+    <h3>EĞİTİM</h3>
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>MEF Üniversitesi (Eğitim Dili %100 İngilizce, ABET Akreditasyonu, %75 Burs)</strong>
+        <span class="cv-right">İstanbul, TR</span>
+      </div>
+      <div class="cv-row">
+        <em>Bilgisayar Mühendisliği, Lisans (B.Eng.)</em>
+        <span class="cv-right">2020–2025</span>
+      </div>
+     <ul>
+  <li><strong>Tez I:</strong> 
+    <a href="https://github.com/yildizbeyza/SDP-1-Churn-Prediction-Recommendation-Engine-and-Chatbot-Designs-in-DsmartGO-platform" 
+       target="_blank">
+       Video yayın servislerinde Churn Tahmini, Öneri Motoru ve Chatbot Tasarımları
+    </a>
+  </li>
+  <li><strong>Tez II:</strong> 
+    <a href="https://github.com/yildizbeyza/SDP-2-Benchmarking-LLMs-and-Transformer-Architectures-on-Turkish-Coreference-Resolution" 
+       target="_blank">
+       Türkçe Çekirdek Başvuru Çözümlemesinde (Coreference) LLM ve Transformer Mimarilerinin Kıyaslanması
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Kadir Has Üniversitesi</strong>
+        <span class="cv-right">İstanbul, TR</span>
+      </div>
+      <div class="cv-row">
+        <em>Fizik – Prof. Dr. Nihat Berker</em>
+        <span class="cv-right">2016–2020</span>
+      </div>
+      <p>Lise yıllarında üniversite düzeyinde; mekanik, elektromanyetizma, kuantum ve istatistiksel fizik derslerini tamamladım; faz geçişleri ve yeniden ölçekleme (renormalizasyon) kuramı üzerine araştırmalara katıldım.</p>
+      <ul>
+        <li><strong>Tez I:</strong> Fraktal Ölçek Değerinde Faz Geçişleri</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Yüksel İlhan Alanyalı Fen Lisesi</strong>
+        <span class="cv-right">İstanbul, TR</span>
+      </div>
+      <div class="cv-row">
+        <em>STEM, Matematik &amp; Fen</em>
+        <span class="cv-right">2015–2019</span>
+      </div>
+      <p><strong>Ödüller:</strong> TÜBİTAK Türkiye Fizik Olimpiyatı 3.’lüğü; ulusal ve uluslararası Zekâ-Matematik yarışmalarında derece.</p>
+    </div>
+
+    <h3>YETKİNLİKLER &amp; İLGİ ALANLARI</h3>
+    <p><strong>Programlama &amp; Araçlar:</strong> Python, C#, C++; Git, GitHub, VS Code, PyCharm, Rider, Jupyter, Colab</p>
+    <p><strong>YZ &amp; Makine Öğrenmesi:</strong> PyTorch, TensorFlow, scikit-learn, Hugging Face Transformers deneyimi. LLM karşılaştırmaları, ince ayar (fine-tuning) ve düzenli/few-shot prompt tasarımları; çıktı değerlendirme çalışmaları. Bilgisayarlı Görü uygulamalarında OpenCV, DeepFace ve Google Vision API kullanımı.</p>
+    <p><strong>Üretken YZ &amp; Otomasyon:</strong> Stable Diffusion, Diffusers, LoRA fine-tuning, ControlNet, ComfyUI, FastAPI, REST API entegrasyonu, iş akışı otomasyonu betikleri (Python/Bash).</p>
+    <p><strong>Veri &amp; Görselleştirme:</strong> Pandas, NumPy, Matplotlib, Streamlit, Plotly, SQL (değerlendirme, metrik karşılaştırma, deney takibi).</p>
+    <p><strong>Oyun &amp; Simülasyon:</strong> Unity (C#), Unity ML-Agents, Blender Python API.</p>
+    <p><strong>MLOps &amp; Yaygınlaştırma, Maker Araçları:</strong> Streamlit, Gradio, Hugging Face Spaces, Affinity Designer, PhotoWorks, Blender, FreeCAD; 3B baskı &amp; lazer kesim prototipleme (Orca Slicer, Repetier-Host, Arduino entegrasyonu); Reaper (ses düzenleme).</p>
+    <p><strong>İşletim Sistemleri:</strong> Linux, Windows.</p>
+    <p><strong>Dil:</strong> İngilizce (İleri), İspanyolca (Duolingo-A1), Türkçe (Ana dil).</p>
+    <p><strong>İlgi Alanları:</strong> Strateji &amp; Zekâ Oyunları, Tiyatro &amp; Performans, Yemek, DIY &amp; El işleri, 3B Tasarım &amp; Prototipleme, Podcast, LEGO, Bilgisayar Oyunları, Popüler Bilim.</p>
+
+    <h3>DENEYİM</h3>
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>ICRYPEX — AI/ML Stajyeri</strong>
+        <span class="cv-right">İstanbul, TR · 2025 (2 ay)</span>
+      </div>
+      <ul>
+        <li>Kişiselleştirme akışlarını iyileştirmek için Python ve vektör arama (Pinecone) ile NFT öneri sistemi geliştirdim.</li>
+        <li>API tabanlı test (Postman) ile veri alma ve değerlendirme hatlarını otomatikleştirdim; ürün ekipleriyle özellik sıralama iterasyonlarına katkı sağladım.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Green Chimneys — STEM Uzmanı, AI/ML Mühendisi</strong>
+        <span class="cv-right">New York, ABD · 2024 (4 ay)</span>
+      </div>
+      <ul>
+        <li>Etkileşimli deneyleri desteklemek için Python, Jupyter ve Google Colab ile YZ destekli STEM etkinlikleri geliştirdim.</li>
+        <li>Gerçek dünya YZ kullanımını göstermek için prompt tasarımı ve iş akışı otomasyonlarını uyguladım.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>T.C. Cumhurbaşkanlığı Dijital Dönüşüm Ofisi — Büyük Veri &amp; YZ Dairesi, AI/ML Stajyeri</strong>
+        <span class="cv-right">Ankara, TR · 2023 (2 ay)</span>
+      </div>
+      <ul>
+        <li>TensorFlow, DeepFace, OpenCV ve Google Cloud API’leriyle yüz ve konuşma tanıma sistemleri geliştirdim/test ettim.</li>
+        <li>Asistan robot projesinde doğruluk ve güvenilirliği artırmak için veri işleme ve model değerlendirme hatlarını otomatikleştirdim.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>DogGO — Backend Developer Stajyeri</strong>
+        <span class="cv-right">İstanbul, TR · 2022 (1 ay)</span>
+      </div>
+      <ul>
+        <li>Scala ve Cassandra kullanarak mobil uygulama için arka uç geliştirme görevlerine destek verdim.</li>
+        <li>API yapısı, veritabanı entegrasyonu ve sürüm kontrolü hakkında başlangıç düzeyi deneyim kazandım.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>MEF Üniversitesi</strong>
+        <span class="cv-right">İstanbul, TR</span>
+      </div>
+      <ul>
+        <li><em>Programlama Stüdyosu Laboratuvarları (2024–2025 Bahar), Asistan:</em> Çoklu dilde programlama ve hata ayıklamada öğrencilere rehberlik ederek kod yapısı ve problem çözme verimliliğini artırdım.</li>
+        <li><em>Dijital Sistem Tasarımı Laboratuvarları (2023–2024 Güz), Asistan:</em> Logisim, breadboard ve Armv9 mimarisi ile devre tasarımı/testine destek verdim.</li>
+        <li><em>Teknoloji Transfer Ofisi Öğrenci Asistanı (2021–2023):</em> Üniversitenin Ar-Ge merkezinde ulusal/uluslararası paydaşlarla yazılım projelerine katkı sağladım.</li>
+      </ul>
+    </div>
+
+    <div class="cv-block">
+      <div class="cv-row">
+        <strong>Kadir Has Üniversitesi — Ders Asistanı (Augmented Mechanics)</strong>
+        <span class="cv-right">İstanbul, TR · 2018 (1 yıl)</span>
+      </div>
+      <ul>
+        <li>Dersi yüksek notlarla tamamladıktan sonra Prof. Dr. Nihat Berker’e laboratuvar yürütümü ve araştırma hazırlığında destek verdim.</li>
+      </ul>
+    </div>
+
+    <h3>LİDERLİK &amp; ETKİNLİKLER</h3>
+    <ul>
+      <li><strong>TEKNOFEST – Turizm Teknolojileri, 2.’lik (2021):</strong> Açık büfe israfını azaltmak için dikkatli porsiyon seçimini teşvik eden <em>DigiChef</em> mobil uygulamasında backend ve frontend geliştirmeye katkı.</li>
+      <li><strong>MEF Dynamics (2021–2023):</strong> Kurucu ekip üyesi; proje ve yarışmalarda görev aldım.</li>
+      <li><strong>IEEE Computer Society, Başkan Yardımcısı (2020–2021):</strong> Topluluk odaklı teknik etkinlikleri yönettim.</li>
+      <li><strong>MEF Tiyatro (2020–2025):</strong> Oyunculuk ve müzikal kayıtlar; dekor ve kostüm tasarımına destek.</li>
+      <li><strong>MEF Gaming (2021–2024):</strong> Game Jam’ler ve geliştirici etkinliklerine aktif katılım.</li>
+    </ul>
+  </div>
+</div>
+
+          <!-- CONTACT -->
           <div id="contact" class="content-region hide">
-            <h2>Contact</h2>
-            <p>
-              Pellentesque nec nam aliquam sem et tortor consequat. Quisque sagittis purus sit amet volutpat consequat. Magna eget est lorem ipsum dolor. 
-            </p>
-          </div>
+  <h2>Contact</h2>
+  <ul class="contact-list">
+    <li><a href="https://www.linkedin.com/in/beyzanur-yildiz/" target="_blank">LinkedIn: Beyza Yıldız</a></li>
+    <li><a href="https://github.com/yildizbeyza" target="_blank">GitHub: yildizbeyza</a></li>
+    <li><a href="mailto:yildizbeyzax@gmail.com">E-mail: yildizbeyzax@gmail.com</a></li>
+  </ul>
+</div>
+
           
         </div>
       </div>
     </div>
-
-    <footer>  
-      Footer region
-    </footer>
     
-    <!-- Load additional JS scripts here -->
+    <!-- Template'in kendi JS'i -->
     <script type="text/javascript" src="script.js"></script>
-    
+
+    <!-- Dil seçimi -->
+    <script>
+      function setLang(lang) {
+        document.querySelectorAll('.lang').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.' + lang).forEach(el => el.style.display = 'block');
+      }
+      
+      setLang('tr');
+    </script>
+<script>
+  // Portfolyo içi linklerde global script'in varsayılanını iptal edip
+  // doğrudan ilgili karta kaydır.
+  document.querySelectorAll('.portfolio-links a').forEach(a => {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation(); // template'in hash yakalamasını engelle
+      const id = this.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      // emin olmak için portfolyo bölümü açık kalsın
+      const home = document.getElementById('home');
+      if (home && home.classList.contains('hide')) home.classList.remove('hide');
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, true);
+  });
+</script>
+
   </body>
 </html>
